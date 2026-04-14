@@ -143,41 +143,50 @@
                 </div>
             </div>
         </div> 
-                        <!-- SEDATION TITRATION HELPER - RASS-linked -->
-        <div id="sedation" class="hidden p-6">
-            <div class="flex items-center justify-between mb-6">
-                <button onclick="back()" 
-                        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
-                    ←
-                </button>
-                <h2 class="text-3xl font-semibold">Sedation Titration</h2>
-                <div class="w-16"></div>
+
+        <!-- ====================== SEDATION TITRATION HELPER ====================== -->
+        <div id="sedation" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Sedation Titration</h2>
+                    <div class="w-12"></div>
+                </div>
             </div>
 
-            <div class="space-y-6">
-                <select id="sedMed" onchange="updateSedMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
-                    <option value="prop">Propofol</option>
-                    <option value="mid">Midazolam</option>
-                    <option value="dex">Dexmedetomidine</option>
-                    <option value="fent">Fentanyl</option>
-                    <option value="ket">Ketamine</option>
-                </select>
+            <div class="p-4 space-y-6">
+                <!-- Medication Selector -->
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">Medication</label>
+                    <select id="sedMed" onchange="updateSedMed()" 
+                            class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400">
+                        <option value="prop">Propofol</option>
+                        <option value="mid">Midazolam</option>
+                        <option value="dex">Dexmedetomidine</option>
+                        <option value="fent">Fentanyl</option>
+                        <option value="ket">Ketamine</option>
+                    </select>
+                </div>
 
+                <!-- Current Rate + Patient Weight -->
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
+                    <div class="flex flex-col">
                         <label class="block text-sm text-zinc-400 mb-2">Current rate (mL/hr)</label>
-                        <input id="sedCurrentRate" type="number" value="20" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                        <input id="sedCurrentRate" type="number" value="20" 
+                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
                     </div>
-                    <div>
+                    <div class="flex flex-col">
                         <label class="block text-sm text-zinc-400 mb-2">Patient weight (kg)</label>
-                        <input id="sedWeight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                        <input id="sedWeight" type="number" value="80" 
+                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
                     </div>
                 </div>
 
+                <!-- Current RASS + Target RASS -->
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
+                    <div class="flex flex-col">
                         <label class="block text-sm text-zinc-400 mb-2">Current RASS</label>
-                        <select id="currentRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                        <select id="currentRASS" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
                             <option value="4">+4 Combative</option>
                             <option value="3">+3 Very agitated</option>
                             <option value="2">+2 Agitated</option>
@@ -190,9 +199,9 @@
                             <option value="-5">-5 Unarousable</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="flex flex-col">
                         <label class="block text-sm text-zinc-400 mb-2">Desired (Target) RASS</label>
-                        <select id="targetRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                        <select id="targetRASS" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
                             <option value="4">+4 Combative</option>
                             <option value="3">+3 Very agitated</option>
                             <option value="2">+2 Agitated</option>
@@ -207,12 +216,14 @@
                     </div>
                 </div>
 
+                <!-- Calculate Button -->
                 <button onclick="calcSedationTitration()" 
-                        class="w-full bg-teal-700 hover:bg-teal-800 py-6 rounded-3xl text-2xl font-semibold">
+                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-semibold active:scale-95 transition-all">
                     Calculate New Rate
                 </button>
 
-                <div id="sedResult" class="hidden result-box bg-zinc-800 rounded-3xl p-6 text-center">
+                <!-- Result -->
+                <div id="sedResult" class="hidden bg-zinc-800 rounded-3xl p-6 text-center">
                     <div id="sedNewRate" class="text-teal-400 text-7xl font-semibold"></div>
                     <div id="sedLabel" class="text-xl mt-2"></div>
                     <div id="sedExplanation" class="text-sm text-zinc-400 mt-4"></div>
@@ -223,6 +234,7 @@
                 </div>
             </div>
         </div>
+            
         <!-- ====================== VASOPRESSOR TITRATION HELPER ====================== -->
         <div id="vaso" class="hidden">
             <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
