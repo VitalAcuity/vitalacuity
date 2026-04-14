@@ -889,45 +889,54 @@
         </div>
 
         <!-- ====================== IDEAL BODY WEIGHT SCREEN ====================== -->
-        <div id="ibw" class="hidden">
-            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
-                <div class="flex items-center justify-between">
-                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
-                    <h2 class="text-3xl font-bold text-white">Ideal Body Weight</h2>
-                    <div class="w-12"></div>
-                </div>
+<div id="ibw" class="hidden">
+    <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+            <h2 class="text-3xl font-bold text-white">Ideal Body Weight</h2>
+            <div class="w-12"></div>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-6">
+        <!-- Gender Buttons -->
+        <div class="flex gap-3">
+            <button onclick="selectGender('male')" id="maleBtn" class="flex-1 py-4 rounded-3xl border-2 border-emerald-400 bg-zinc-900 text-white font-semibold">Male</button>
+            <button onclick="selectGender('female')" id="femaleBtn" class="flex-1 py-4 rounded-3xl border-2 border-zinc-700 hover:border-zinc-500 text-white font-semibold">Female</button>
+        </div>
+
+        <!-- Height Input -->
+        <div>
+            <label class="text-zinc-400 text-sm block mb-2">Patient Height</label>
+            <div class="flex gap-2">
+                <!-- Narrowed height input - comfortably fits up to 99999 -->
+                <input id="heightValue" 
+                       type="number" 
+                       placeholder="Height" 
+                       class="w-40 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
+
+                <select id="heightUnit" 
+                        class="bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400 w-28">
+                    <option value="inches">inches</option>
+                    <option value="cm">cm</option>
+                </select>
             </div>
+        </div>
 
-            <div class="p-4 space-y-6">
-                <div class="flex gap-3">
-                    <button onclick="selectGender('male')" id="maleBtn" class="flex-1 py-4 rounded-3xl border-2 border-emerald-400 bg-zinc-900 text-white font-semibold">Male</button>
-                    <button onclick="selectGender('female')" id="femaleBtn" class="flex-1 py-4 rounded-3xl border-2 border-zinc-700 hover:border-zinc-500 text-white font-semibold">Female</button>
-                </div>
+        <button onclick="calcIBW()" 
+                class="w-full bg-teal-600 hover:bg-emerald-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+            Calculate IBW
+        </button>
 
-                <div>
-                    <label class="text-zinc-400 text-sm block mb-2">Patient Height</label>
-                    <div class="flex gap-2">
-                        <input id="heightValue" type="number" placeholder="Height" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                        <select id="heightUnit" class="bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400 w-28">
-                            <option value="inches">inches</option>
-                            <option value="cm">cm</option>
-                        </select>
-                    </div>
-                </div>
+        <div id="ibwResult" class="hidden bg-zinc-900 rounded-3xl p-6 text-center">
+            <div class="text-teal-400 text-5xl font-bold" id="ibwValue"></div>
+            <div class="text-zinc-400 mt-1">kg Ideal Body Weight</div>
+            <div class="mt-4 text-sm text-zinc-400" id="tidalRange"></div>
+        </div>
 
-                <button onclick="calcIBW()" class="w-full bg-teal-600 hover:bg-emerald-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
-                    Calculate IBW
-                </button>
-
-                <div id="ibwResult" class="hidden bg-zinc-900 rounded-3xl p-6 text-center">
-                    <div class="text-teal-400 text-5xl font-bold" id="ibwValue"></div>
-                    <div class="text-zinc-400 mt-1">kg Ideal Body Weight</div>
-                    <div class="mt-4 text-sm text-zinc-400" id="tidalRange"></div>
-                </div>
-
-                <button onclick="resetIBW()" class="w-full text-zinc-400 py-3 text-sm">Reset</button>
-            </div>
-        </div>    
+        <button onclick="resetIBW()" class="w-full text-zinc-400 py-3 text-sm">Reset</button>
+    </div>
+</div>
         
                      <!-- ====================== PAYWALL SCREEN ====================== -->
         <div id="paywall" class="hidden min-h-screen bg-zinc-950 flex items-center justify-center p-6">
