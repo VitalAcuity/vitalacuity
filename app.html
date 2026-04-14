@@ -1511,7 +1511,8 @@
             document.getElementById('sedResult').classList.remove('hidden');
         }      
 
-       let conversionMap = {
+  // ====================== UNIT CONVERTER FUNCTIONS ======================
+let conversionMap = {
     // Weight / Mass
     "kg": { "g": 1000, "mg": 1e6, "mcg": 1e9, "lb": 2.20462, "oz": 35.274 },
     "g": { "kg": 0.001, "mg": 1000, "mcg": 1e6, "lb": 0.00220462, "oz": 0.035274 },
@@ -1520,7 +1521,7 @@
     "lb": { "kg": 0.453592, "g": 453.592, "mg": 453592, "mcg": 4.53592e8, "oz": 16 },
     "oz": { "kg": 0.0283495, "g": 28.3495, "mg": 28349.5, "mcg": 2.83495e7, "lb": 0.0625 },
 
-    // Volume (fluids, meds, IV)
+    // Volume (IV fluids, meds, household)
     "L": { "mL": 1000, "cc": 1000, "tsp": 202.884, "Tbsp": 67.628, "fl oz": 33.814, "cup": 4.22675, "pt": 2.11338, "qt": 1.05669, "gal": 0.264172 },
     "mL": { "L": 0.001, "cc": 1, "tsp": 0.202884, "Tbsp": 0.067628, "fl oz": 0.033814, "cup": 0.00422675, "pt": 0.00211338, "qt": 0.00105669, "gal": 0.000264172 },
     "cc": { "L": 0.001, "mL": 1, "tsp": 0.202884, "Tbsp": 0.067628, "fl oz": 0.033814, "cup": 0.00422675, "pt": 0.00211338, "qt": 0.00105669, "gal": 0.000264172 },
@@ -1533,8 +1534,8 @@
     "gal": { "mL": 3785.41, "fl oz": 128, "qt": 4, "pt": 8 },
 
     // Drops (IV tubing)
-    "gtt": { "mL": 0.05 },   // approx 20 gtt/mL standard macro
-    "mcgtt": { "mL": 0.016667 }, // approx 60 mcgtt/mL microdrip
+    "gtt": { "mL": 0.05 },     // ~20 drops/mL macro
+    "mcgtt": { "mL": 0.016667 }, // ~60 drops/mL micro
 
     // Length
     "cm": { "m": 0.01, "mm": 10, "in": 0.393701, "ft": 0.0328084 },
@@ -1548,15 +1549,15 @@
     "kPa": { "mmHg": 7.50062, "cmH2O": 10.1972 },
     "cmH2O": { "mmHg": 0.735559, "kPa": 0.0980665 },
 
-    // Other clinical
-    "mEq": {}, // placeholder - usually 1:1 for many electrolytes, but context-specific
-    "U": {},   // units (insulin, heparin) - often not directly convertible without concentration
-    "gr": { "mg": 64.79891 }  // grains
+    // Temperature will be handled separately
 };
 
 function populateUnits() {
     const fromSelect = document.getElementById('unitFrom');
     const toSelect = document.getElementById('unitTo');
+    
+    if (!fromSelect || !toSelect) return;
+
     fromSelect.innerHTML = '';
     toSelect.innerHTML = '';
 
@@ -1569,18 +1570,18 @@ function populateUnits() {
     ];
 
     units.forEach(unit => {
-        const opt1 = document.createElement('option');
+        let opt1 = document.createElement('option');
         opt1.value = unit;
         opt1.textContent = unit;
         fromSelect.appendChild(opt1);
 
-        const opt2 = document.createElement('option');
+        let opt2 = document.createElement('option');
         opt2.value = unit;
         opt2.textContent = unit;
         toSelect.appendChild(opt2);
     });
 
-    // Sensible defaults
+    // Default sensible choices
     fromSelect.value = "kg";
     toSelect.value = "lb";
 }
@@ -1597,18 +1598,19 @@ function convertUnits() {
 
     let result = 0;
 
-    // Temperature special cases
+    // Temperature
     if (from === '°C' && to === '°F') result = (val * 9/5) + 32;
     else if (from === '°F' && to === '°C') result = (val - 32) * 5/9;
-    // Drop / microdrop approximations
+    // Drops
     else if (from === 'gtt' && to === 'mL') result = val * 0.05;
     else if (from === 'mcgtt' && to === 'mL') result = val * 0.016667;
+    // Normal conversions
     else if (conversionMap[from] && conversionMap[from][to] !== undefined) {
         result = val * conversionMap[from][to];
     } else if (conversionMap[to] && conversionMap[to][from] !== undefined) {
         result = val / conversionMap[to][from];
     } else {
-        alert(`Conversion between ${from} and ${to} is not directly supported in this tool.\n\nTry a different pair or use clinical context.`);
+        alert(`Conversion between ${from} → ${to} not supported yet.\nTry another combination.`);
         return;
     }
 
@@ -1617,10 +1619,13 @@ function convertUnits() {
 
 function reverseConversion() {
     const val2 = document.getElementById('unitValue2').value;
-    if (!val2) return;
-    const tempFrom = document.getElementById('unitFrom').value;
-    document.getElementById('unitFrom').value = document.getElementById('unitTo').value;
-    document.getElementById('unitTo').value = tempFrom;
+    if (!val2 || val2 === '') return;
+
+    const currentFrom = document.getElementById('unitFrom').value;
+    const currentTo = document.getElementById('unitTo').value;
+
+    document.getElementById('unitFrom').value = currentTo;
+    document.getElementById('unitTo').value = currentFrom;
     document.getElementById('unitValue1').value = val2;
     convertUnits();
 }
@@ -1628,7 +1633,7 @@ function reverseConversion() {
 function clearConverter() {
     document.getElementById('unitValue1').value = '';
     document.getElementById('unitValue2').value = '';
-}         
+}             
 
         
 
