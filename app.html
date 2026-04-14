@@ -1321,6 +1321,12 @@
             document.getElementById('dripResult').classList.remove('hidden');
         }
 
+        let currentSedMed = "prop";   // default
+
+function updateSedMed() {
+    currentSedMed = document.getElementById('sedMed').value;
+}
+
         function updateMed() {
             currentMed = document.getElementById('medSelect').value;
             const concInput = document.getElementById('conc');
@@ -1463,53 +1469,60 @@
             document.getElementById('vasoResult').classList.remove('hidden');
         } 
 
-        function calcSedationTitration() {
-            const med = currentSedMed;
-            let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
-            const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
-            const currentRASS = parseInt(document.getElementById('currentRASS').value);
-            const targetRASS = parseInt(document.getElementById('targetRASS').value);
+      function calcSedationTitration() {
+    const med = currentSedMed;
+    let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
+    const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
+    const currentRASS = parseInt(document.getElementById('currentRASS').value);
+    const targetRASS = parseInt(document.getElementById('targetRASS').value);
 
-            // Standard ICU concentrations
-            let conc = 10;   // mg/mL for Propofol and Ketamine
-            if (med === "mid") conc = 1;
-            else if (med === "dex") conc = 4;
-            else if (med === "fent") conc = 50;
-            else if (med === "ket") conc = 10;
+    if (isNaN(currentRate) || isNaN(weight)) {
+        alert("Please enter current rate and patient weight.");
+        return;
+    }
 
-            // RASS delta (positive = needs to be more awake → decrease sedation)
-            const rassDelta = targetRASS - currentRASS;
+    // Standard concentrations (mg/mL unless noted)
+    let conc = 10; // default for Propofol / Ketamine
+    if (med === "mid") conc = 1;
+    else if (med === "dex") conc = 4;      // mcg/mL but we treat as mg for simplicity in titration
+    else if (med === "fent") conc = 50;
+    else if (med === "ket") conc = 10;
 
-            // Realistic mL/hr change per RASS point (drug-specific)
-            let mlPerRASSPoint = 8;
-            if (med === "prop") mlPerRASSPoint = 8;
-            else if (med === "mid") mlPerRASSPoint = 2;
-            else if (med === "dex") mlPerRASSPoint = 4;
-            else if (med === "fent") mlPerRASSPoint = 10;
-            else if (med === "ket") mlPerRASSPoint = 5;
+    // RASS delta: positive = needs less sedation → decrease rate
+    const rassDelta = targetRASS - currentRASS;
 
-            let rateChange = rassDelta * mlPerRASSPoint * -1;   // negative sign flips direction correctly
+    // Drug-specific adjustment (mL/hr per RASS point change)
+    let mlPerRASSPoint = 8;
+    if (med === "prop") mlPerRASSPoint = 8;
+    else if (med === "mid") mlPerRASSPoint = 2;
+    else if (med === "dex") mlPerRASSPoint = 3;
+    else if (med === "fent") mlPerRASSPoint = 10;
+    else if (med === "ket") mlPerRASSPoint = 5;
 
-            // Safety limit on max change
-            if (Math.abs(rateChange) > 30) rateChange = Math.sign(rateChange) * 30;
+    // Calculate change (negative delta = increase sedation)
+    let rateChange = rassDelta * mlPerRASSPoint * -1;
 
-            let newRate = currentRate + rateChange;
-            if (newRate < 0) newRate = 0;
+    // Safety cap
+    if (Math.abs(rateChange) > 30) rateChange = Math.sign(rateChange) * 30;
 
-            newRate = Math.round(newRate * 10) / 10;
+    let newRate = currentRate + rateChange;
+    if (newRate < 0) newRate = 0;
+    newRate = Math.round(newRate * 10) / 10;
 
-            // Clear explanation
-            let direction = rassDelta > 0 ? "— Decrease sedation (patient needs to be more awake)" 
-                         : rassDelta < 0 ? "— Increase sedation (patient too awake)" 
-                         : "— At target RASS";
-            
-            let explanation = `Current RASS ${currentRASS} → Target ${targetRASS} (Δ ${rassDelta}) ${direction}`;
+    // Explanation
+    let direction = "";
+    if (rassDelta > 0) direction = "— Decrease sedation (patient more awake than target)";
+    else if (rassDelta < 0) direction = "— Increase sedation (patient too awake)";
+    else direction = "— Already at target RASS";
 
-            document.getElementById('sedNewRate').textContent = newRate;
-            document.getElementById('sedLabel').innerHTML = `mL/hr for ${med.toUpperCase()}`;
-            document.getElementById('sedExplanation').innerHTML = explanation;
-            document.getElementById('sedResult').classList.remove('hidden');
-        }      
+    let explanation = `Current RASS ${currentRASS} → Target ${targetRASS} (Δ ${rassDelta}) ${direction}`;
+
+    // Update UI
+    document.getElementById('sedNewRate').textContent = newRate;
+    document.getElementById('sedLabel').innerHTML = `mL/hr of ${med.charAt(0).toUpperCase() + med.slice(1)}`;
+    document.getElementById('sedExplanation').innerHTML = explanation;
+    document.getElementById('sedResult').classList.remove('hidden');
+}     
              
     // ====================== UNIT CONVERTER FUNCTIONS ======================
 let conversionMap = {
@@ -1736,7 +1749,8 @@ function clearConverter() {
             console.log("VitalAcuity fully loaded");
 
             setupRASS();
-            updateMed();           // This one exists
+            updateMed();
+            updateSedMed();        // This one exists
             updateVasoMed();       // This one exists
             setDripMode('drops');
             populateUnits();       // This will now run successfully
