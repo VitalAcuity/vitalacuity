@@ -1367,71 +1367,71 @@
             document.getElementById('mapInputGroup').classList.toggle('hidden', changeType !== "targetMAP");
         }
 
-                                        function calcVasoTitration() {
-            const med = currentVasoMed;
-            let currentRate = parseFloat(document.getElementById('vasoCurrentRate').value) || 0;
-            const weight = parseFloat(document.getElementById('vasoWeight').value) || 80;
+        function calcVasoTitration() {
+            const med = document.getElementById('vasoMed').value;
+            let currentRate = parseFloat(document.getElementById('currentRate').value) || 0;
+            const weight = parseFloat(document.getElementById('patientWeight').value) || 80;
             const changeType = document.getElementById('vasoChange').value;
             let targetMAP = parseFloat(document.getElementById('targetMAP').value) || 65;
-            let currentMAP = parseFloat(document.getElementById('currentMAP').value) || null;
-            const intensity = document.getElementById('titrationIntensity').value;
+            let currentMAP = parseFloat(document.getElementById('currentMAP').value) || 58;
 
-            if (changeType === "targetMAP" && targetMAP < 65) {
-                if (!confirm(`Warning: Target MAP < 65 mmHg may increase risk of organ hypoperfusion.\n\nProceed anyway?`)) {
-                    return;
-                }
-            }
+            // Standard concentrations (mcg/mL)
+            const concMap = {
+                "norepi": 16,   // 4 mg in 250 mL = 16 mcg/mL
+                "epi": 16,
+                "dopa": 1600,   // 400 mg in 250 mL = 1600 mcg/mL
+                "dobu": 1000
+            };
 
-            let conc = 16;
-            if (med === "dopa") conc = 1600;
-            else if (med === "dobu") conc = 2500;
+            const conc = concMap[med] || 16;
 
             let newRate = currentRate;
             let explanation = "";
 
             if (changeType === "targetMAP") {
-                let deltaMAP = 10;
-                if (currentMAP !== null) deltaMAP = targetMAP - currentMAP;
+                const intensity = document.getElementById('titrationIntensity').value;
+                let factor = 0.02; // moderate default
 
-                // Tiered constants based on safety
-                let factor = 0.015; // default moderate
-                if (intensity === "conservative") factor = 0.010;
-                else if (intensity === "aggressive") factor = 0.030;
+                if (intensity === "conservative") factor = 0.01;
+                else if (intensity === "aggressive") factor = 0.04;
 
-                const doseAdjustment = (deltaMAP / 5) * factor;
-                const currentDose = (currentRate * conc) / (60 * weight);
-                const newDose = Math.max(0, currentDose + doseAdjustment);
+                const deltaMAP = targetMAP - currentMAP;
+                const doseChange = (deltaMAP / 5) * factor;   // 5 mmHg per 0.02 mcg/kg/min approx
+
+                // Convert current rate to mcg/kg/min
+                const currentDose = (currentRate * conc) / (weight * 60);
+                let newDose = Math.max(0, currentDose + doseChange);
 
                 newRate = (newDose * weight * 60) / conc;
-                explanation = `${intensity.charAt(0).toUpperCase() + intensity.slice(1)} titration: From ${currentMAP || '?'} → ${targetMAP} mmHg`;
-            } else {
-                let delta = 0;
-                if (changeType === "increase005") delta = 0.05;
-                else if (changeType === "increase01") delta = 0.1;
-                else if (changeType === "decrease005") delta = -0.05;
-                else if (changeType === "decrease01") delta = -0.1;
+                newRate = Math.round(newRate * 10) / 10;
 
-                const currentDose = (currentRate * conc) / (60 * weight);
-                const newDose = currentDose + delta;
+                explanation = `Target MAP ${targetMAP} mmHg • ${intensity} adjustment`;
+            } 
+            else {
+                // Simple step change
+                let step = 0;
+                if (changeType === "increase005") step = 0.05;
+                else if (changeType === "increase01") step = 0.1;
+                else if (changeType === "decrease005") step = -0.05;
+                else if (changeType === "decrease01") step = -0.1;
+
+                const currentDose = (currentRate * conc) / (weight * 60);
+                let newDose = Math.max(0, currentDose + step);
+
                 newRate = (newDose * weight * 60) / conc;
-                explanation = `${delta > 0 ? 'Increased' : 'Decreased'} by ${Math.abs(delta)} mcg/kg/min`;
+                newRate = Math.round(newRate * 10) / 10;
+
+                explanation = `${step > 0 ? 'Increase' : 'Decrease'} by ${Math.abs(step)} mcg/kg/min`;
             }
 
-            newRate = Math.max(0, Math.round(newRate * 10) / 10);
-
+            // Display result
             document.getElementById('vasoNewRate').textContent = newRate;
-            document.getElementById('vasoLabel').innerHTML = `mL/hr for ${med.toUpperCase()}`;
-            document.getElementById('vasoExplanation').innerHTML = explanation;
+            document.getElementById('vasoLabel').innerHTML = `mL/hr of ${med === 'norepi' ? 'Norepinephrine' : med === 'epi' ? 'Epinephrine' : med === 'dopa' ? 'Dopamine' : 'Dobutamine'}`;
+            document.getElementById('vasoExplanation').textContent = explanation;
             document.getElementById('vasoResult').classList.remove('hidden');
-        }              
-
-                    let currentSedMed = "prop";
-
-        function updateSedMed() {
-            currentSedMed = document.getElementById('sedMed').value;
         }
 
-                      function calcSedationTitration() {
+        function calcSedationTitration() {
             const med = currentSedMed;
             let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
             const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
