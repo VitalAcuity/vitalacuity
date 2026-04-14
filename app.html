@@ -1000,7 +1000,7 @@
         let currentMed = "norepi";
         let dripMode = "drops";
 
-                // Strong device-bound unlock system
+                // ====================== PAYWALL / UNLOCK SYSTEM ======================
         function getDeviceFingerprint() {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
@@ -1019,12 +1019,10 @@
         function checkIfUnlocked() {
             const savedHash = localStorage.getItem('va_unlock_hash');
             const savedExpiry = localStorage.getItem('va_expiry');
-
             if (!savedHash || !savedExpiry) {
                 navigate('paywall');
                 return;
             }
-
             if (Date.now() > parseInt(savedExpiry)) {
                 alert("Your license has expired. Please renew.");
                 localStorage.removeItem('va_unlock_hash');
@@ -1032,41 +1030,32 @@
                 navigate('paywall');
                 return;
             }
-
             const currentFingerprint = getDeviceFingerprint();
             const expectedHash = btoa(savedHash + currentFingerprint).slice(0, 32);
-
             if (localStorage.getItem('va_current_hash') !== expectedHash) {
                 alert("This license key is not valid on this device.");
                 navigate('paywall');
                 return;
             }
-
             navigate('home');
         }
 
         function unlockApp() {
             const key = document.getElementById('licenseKey').value.trim();
-
             if (key.length < 12) {
                 alert("Please enter a valid license key.");
                 return;
             }
-
             const fingerprint = getDeviceFingerprint();
             const combined = key + fingerprint;
             const hash = btoa(combined).slice(0, 40);
-
             let days = 30;
             if (key.includes("ANNUAL") || key.includes("YEAR")) days = 365;
             if (key.includes("LIFETIME")) days = 36500;
-
             const expiry = Date.now() + (days * 24 * 60 * 60 * 1000);
-
             localStorage.setItem('va_unlock_hash', hash);
             localStorage.setItem('va_expiry', expiry.toString());
             localStorage.setItem('va_current_hash', btoa(hash + fingerprint).slice(0, 32));
-
             alert("✅ VitalAcuity successfully unlocked on this device!");
             navigate('home');
         }
@@ -1079,7 +1068,7 @@
         function hideUnlockScreen() {
             document.getElementById('unlockScreen').classList.add('hidden');
             document.getElementById('paywall').classList.remove('hidden');
-        }
+        }       
        
 
         function back() {
@@ -1746,18 +1735,19 @@ function clearConverter() {
             document.getElementById('rassDescription').textContent = fullDescs[score] || "";
         }
 
-                window.addEventListener('load', () => {
+        window.addEventListener('load', () => {
             console.log("VitalAcuity fully loaded");
 
             setupRASS();
             updateMed();
-            updateSedMed();       
-            updateVasoMed();       
+            updateSedMed();
+            updateVasoMed();
             setDripMode('drops');
-            populateUnits();      
-            checkIfUnlocked();
-             
+            populateUnits();
+
+            checkIfUnlocked();        // ← Paywall now active again
         });
+    
     </script>
                     </div>   <!-- closes the p-4 pt-6 content area -->
         </div>       <!-- closes the max-w-md container -->
