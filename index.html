@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VitalAcuity • Bedside Tools for RRTs & ICU Nurses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    .hero-bg {
+      background: linear-gradient(rgba(15, 118, 110, 0.85), rgba(19, 78, 74, 0.92)), 
+                  url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat fixed;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white">
+
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-zinc-900 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="logo.png" alt="VitalAcuity" class="h-10">
+        <span class="text-2xl font-bold tracking-tight">VitalAcuity</span>
+      </div>
+      <nav class="hidden md:flex gap-8 text-sm">
+        <a href="#features" class="hover:text-teal-400 transition">Features</a>
+        <a href="#screenshots" class="hover:text-teal-400 transition">Screenshots</a>
+        <a href="#pricing" class="hover:text-teal-400 transition">Pricing</a>
+        <a href="#clinicians" class="hover:text-teal-400 transition">For Clinicians</a>
+      </nav>
+      <a href="app.html" 
+         class="bg-teal-600 hover:bg-teal-500 px-6 py-2.5 rounded-3xl text-sm font-medium transition">
+        Open App
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero - Reduced Height -->
+  <section class="hero-bg py-16 md:py-20 text-center">
+    <div class="max-w-4xl mx-auto px-6">
+      <h1 class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-6">
+        Tools that actually help<br>when it matters most
+      </h1>
+      <p class="text-xl md:text-2xl text-teal-100 max-w-2xl mx-auto">
+        Fast, precise calculators designed by and for RRTs and ICU nurses.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="app.html"
+           class="bg-white text-zinc-900 px-10 py-4 rounded-3xl font-semibold text-lg hover:bg-zinc-100 transition">
+          Open the App
+        </a>
+        <a href="#pricing" 
+           class="border border-white/70 hover:bg-white/10 px-10 py-4 rounded-3xl font-medium text-lg transition">
+          View Pricing
+        </a>
+      </div>
+      <p class="text-zinc-400 text-sm mt-8">Full access requires subscription • No free trial</p>
+    </div>
+  </section>
+
+  <!-- App Screenshots -->
+  <section id="screenshots" class="py-20 bg-black">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-4">Clean. Fast. Built for the bedside.</h2>
+      <p class="text-center text-zinc-400 mb-12">Large touch targets and intuitive design — even in high-pressure situations.</p>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
+          <img src="https://picsum.photos/id/201/600/800" alt="VitalAcuity IV Drip Rate Calculator" class="w-full">
+        </div>
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
+          <img src="https://picsum.photos/id/237/600/800" alt="VitalAcuity Vasopressor Titration Helper" class="w-full">
+        </div>
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden shadow-2xl">
+          <img src="https://picsum.photos/id/1015/600/800" alt="VitalAcuity RSI Drugs & ETT Tools" class="w-full">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-20 bg-zinc-900">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-12">Everything you need at the bedside</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-zinc-800 p-8 rounded-3xl">
+          <h3 class="text-teal-400 text-xl font-semibold mb-3">IV Tools</h3>
+          <p class="text-zinc-400">Drip rate calculator, medication calculator, sedation & vasopressor titration with MAP goals.</p>
+        </div>
+        <div class="bg-zinc-800 p-8 rounded-3xl">
+          <h3 class="text-teal-400 text-xl font-semibold mb-3">Emergency & Airway</h3>
+          <p class="text-zinc-400">RSI drugs with contraindications, ETT sizing & depth, PALS/ACLS/NRP, Ideal Body Weight.</p>
+        </div>
+        <div class="bg-zinc-800 p-8 rounded-3xl">
+          <h3 class="text-teal-400 text-xl font-semibold mb-3">Daily Essentials</h3>
+          <p class="text-zinc-400">6-step ABG interpreter, Glasgow Coma Scale, RASS score, full unit converter.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="py-20">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold mb-4">Choose your plan</h2>
+      <p class="text-zinc-400 mb-12">Full access to all tools. No hidden fees.</p>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <!-- Monthly -->
+        <div class="bg-zinc-900 rounded-3xl p-8 border border-zinc-700">
+          <h3 class="text-2xl font-semibold">Monthly</h3>
+          <div class="mt-6 text-6xl font-bold">$6.99</div>
+          <div class="text-zinc-400">per month • Cancel anytime</div>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/7be04b1b-2cf1-40bc-a187-08746626dd30" target="_blank"
+             class="block mt-10 bg-zinc-800 hover:bg-zinc-700 py-4 rounded-3xl font-medium transition">
+            Subscribe Monthly
+          </a>
+        </div>
+
+        <!-- Annual -->
+        <div class="bg-zinc-900 rounded-3xl p-8 border-2 border-teal-500 relative scale-105">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-teal-500 text-white text-xs font-bold px-6 py-1 rounded-full">MOST POPULAR</div>
+          <h3 class="text-2xl font-semibold">Annual</h3>
+          <div class="mt-6 text-6xl font-bold">$59.99</div>
+          <div class="text-teal-400">billed yearly • Save 28%</div>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/5d966751-3699-4307-866a-1ed063709042" target="_blank"
+             class="block mt-10 bg-teal-600 hover:bg-teal-500 py-4 rounded-3xl font-medium transition">
+            Subscribe Annually
+          </a>
+        </div>
+
+        <!-- Lifetime -->
+        <div class="bg-zinc-900 rounded-3xl p-8 border border-amber-500">
+          <h3 class="text-2xl font-semibold">Lifetime</h3>
+          <div class="mt-6 text-6xl font-bold">$129.99</div>
+          <div class="text-amber-400">one-time payment • Forever access</div>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/c0d1bd7d-7383-4b4d-bf08-da6199c9a72f" target="_blank"
+             class="block mt-10 bg-amber-600 hover:bg-amber-500 py-4 rounded-3xl font-medium transition">
+            Get Lifetime Access
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For Clinicians - Evidence Summary -->
+  <section id="clinicians" class="py-20 bg-zinc-900">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold mb-4">Evidence-Based Tools</h2>
+      <p class="text-zinc-400 max-w-2xl mx-auto mb-12">
+        All calculations follow current best practices from PADIS guidelines, Surviving Sepsis Campaign, and ARDSNet protocols.
+      </p>
+
+      <a href="evidence-summary.pdf" 
+         download="VitalAcuity_Evidence_Summary.pdf"
+         class="inline-flex items-center gap-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 px-10 py-6 rounded-3xl transition text-left mx-auto">
+        <span class="text-4xl">📄</span>
+        <div>
+          <div class="font-semibold text-lg">Download Evidence Summary (PDF)</div>
+          <div class="text-sm text-zinc-400">Supporting references for titration, ABG, and airway management</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black py-12 border-t border-zinc-800">
+    <div class="max-w-5xl mx-auto px-6 text-center text-zinc-500 text-sm">
+      © 2026 VitalAcuity • Designed for Respiratory Therapists and Critical Care Nurses<br>
+      Not a substitute for clinical judgment. Always verify with current institutional protocols and guidelines.
+    </div>
+  </footer>
+
+</body>
+</html>

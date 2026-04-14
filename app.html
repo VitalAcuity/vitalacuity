@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVibe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+        
+        .gcs-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 68px;
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            border-radius: 16px;
+            font-weight: 500;
+        }
+        .gcs-btn .points {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            color: #34d399;
+        }
+        .gcs-btn .label {
+            font-size: 13px;
+            line-height: 1.2;
+            text-align: center;
+            padding: 0 4px;
+        }
+        .gcs-btn.selected {
+            background-color: rgb(16 185 129);
+            color: white;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        .gcs-btn.selected .points { color: white; }
+
+        .card {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .result-box {
+            box-shadow: 0 20px 25px -5px rgb(16 185 129 / 0.15);
+        }
+        
+        input:focus, select:focus {
+            border-color: #34d399;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen pb-12">
+    <!-- MOBILE CONTAINER -->
+    <div class="max-w-md mx-auto bg-zinc-950 min-h-screen">
+
+                        <!-- FINAL REFINED HEADER -->
+        <div class="mx-4 mt-4 bg-[#1b5d5b] rounded-3xl px-6 py-5 flex items-center justify-center shadow-2xl">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" 
+                alt="VitalAcuity Logo" 
+                class="h-16 w-auto">   <!-- Larger logo -->
+                
+                <h1 class="text-3xl font-bold tracking-[-1px] text-white" 
+                    style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                    VitalAcuity
+                </h1>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="p-4 pt-6">
+            <div id="home" class="space-y-4">
+            <!-- Emergency stays at the very top -->
+            <div onclick="navigate('emergency')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-red-500/30 active:scale-[0.98] transition-all">
+                <div class="text-red-400 text-2xl font-semibold">Emergency Meds</div>
+                <div class="text-zinc-400 text-sm mt-1">PALS/ACLS/NRP</div>
+            </div>
+
+            <!-- IV Tools Grouped Card -->
+            <div onclick="navigate('iv')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-teal-400/30 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">IV Tools</div>
+                <div class="text-zinc-400 text-sm mt-1">Medication Calculator • Drip Rate</div>
+            </div>
+
+            <div onclick="navigate('intubation')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">Intubation</div>
+                <div class="text-zinc-400 text-sm mt-1">RSI • ETT • Ideal Body Weight</div>
+            </div>
+
+            <!-- Rest alphabetical -->
+            <div onclick="navigate('abg')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">ABG Interpreter</div>
+                <div class="text-zinc-400 text-sm mt-1">6-step acid-base analysis</div>
+            </div>
+
+            <div onclick="navigate('gcs')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">Glasgow Coma Scale</div>
+                <div class="text-zinc-400 text-sm mt-1">Eye • Verbal • Motor</div>
+            </div>
+
+            <div onclick="navigate('rass')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">RASS Score</div>
+                <div class="text-zinc-400 text-sm mt-1">Richmond Agitation-Sedation Scale</div>
+            </div>
+
+            <div onclick="navigate('units')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                <div class="text-teal-400 text-2xl font-semibold">Unit Converter</div>
+                <div class="text-zinc-400 text-sm mt-1">Metric ↔ Standard + within systems</div>
+            </div>
+        </div>
+                                               <!-- IV TOOLS SUB-MENU - with Sedation Titration added -->
+        <div id="iv" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
+                <h2 class="text-3xl font-semibold">IV Tools</h2>
+                <div class="w-16"></div>
+            </div>
+            
+            <div class="space-y-4">
+                <div onclick="navigate('convert')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">IV Medication Calculator</div>
+                    <div class="text-zinc-400 text-sm mt-1">Pressors • Sedatives • Paralytics</div>
+                </div>
+                
+                <div onclick="navigate('drip')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">IV Drip Rate Calculator</div>
+                    <div class="text-zinc-400 text-sm mt-1">Volume • Time • Multiple modes</div>
+                </div>
+
+                <div onclick="navigate('vaso')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-teal-400/30 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">Vasopressor Titration</div>
+                    <div class="text-zinc-400 text-sm mt-1">MAP goal • Norepi / Epi / Dopamine</div>
+                </div>
+
+                <!-- NEW: Sedation Titration -->
+                <div onclick="navigate('sedation')" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-teal-400/30 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">Sedation Titration</div>
+                    <div class="text-zinc-400 text-sm mt-1">Propofol • Midazolam • Dex • RASS-linked</div>
+                </div>
+            </div>
+        </div> 
+                        <!-- SEDATION TITRATION HELPER - RASS-linked -->
+        <div id="sedation" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" 
+                        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
+                    ←
+                </button>
+                <h2 class="text-3xl font-semibold">Sedation Titration</h2>
+                <div class="w-16"></div>
+            </div>
+
+            <div class="space-y-6">
+                <select id="sedMed" onchange="updateSedMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                    <option value="prop">Propofol</option>
+                    <option value="mid">Midazolam</option>
+                    <option value="dex">Dexmedetomidine</option>
+                    <option value="fent">Fentanyl</option>
+                    <option value="ket">Ketamine</option>
+                </select>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Current rate (mL/hr)</label>
+                        <input id="sedCurrentRate" type="number" value="20" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Patient weight (kg)</label>
+                        <input id="sedWeight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Current RASS</label>
+                        <select id="currentRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                            <option value="4">+4 Combative</option>
+                            <option value="3">+3 Very agitated</option>
+                            <option value="2">+2 Agitated</option>
+                            <option value="1">+1 Restless</option>
+                            <option value="0" selected>0 Alert and calm</option>
+                            <option value="-1">-1 Drowsy</option>
+                            <option value="-2">-2 Light sedation</option>
+                            <option value="-3">-3 Moderate sedation</option>
+                            <option value="-4">-4 Deep sedation</option>
+                            <option value="-5">-5 Unarousable</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Desired (Target) RASS</label>
+                        <select id="targetRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                            <option value="4">+4 Combative</option>
+                            <option value="3">+3 Very agitated</option>
+                            <option value="2">+2 Agitated</option>
+                            <option value="1">+1 Restless</option>
+                            <option value="0" selected>0 Alert and calm</option>
+                            <option value="-1">-1 Drowsy</option>
+                            <option value="-2">-2 Light sedation</option>
+                            <option value="-3">-3 Moderate sedation</option>
+                            <option value="-4">-4 Deep sedation</option>
+                            <option value="-5">-5 Unarousable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="calcSedationTitration()" 
+                        class="w-full bg-teal-700 hover:bg-teal-800 py-6 rounded-3xl text-2xl font-semibold">
+                    Calculate New Rate
+                </button>
+
+                <div id="sedResult" class="hidden result-box bg-zinc-800 rounded-3xl p-6 text-center">
+                    <div id="sedNewRate" class="text-teal-400 text-7xl font-semibold"></div>
+                    <div id="sedLabel" class="text-xl mt-2"></div>
+                    <div id="sedExplanation" class="text-sm text-zinc-400 mt-4"></div>
+                    <div class="text-xs text-amber-400 mt-6">
+                        ⚠️ These are suggestions only. Use clinical judgment.<br>
+                        Reassess RASS frequently • Titrate to lowest effective dose
+                    </div>
+                </div>
+            </div>
+        </div>
+                                         <!-- VASOPRESSOR TITRATION HELPER - final with safety note -->
+        <div id="vaso" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" 
+                        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
+                    ←
+                </button>
+                <h2 class="text-3xl font-semibold">Vasopressor Titration</h2>
+                <div class="w-16"></div>
+            </div>
+
+            <div class="space-y-6">
+                <select id="vasoMed" onchange="updateVasoMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                    <option value="norepi">Norepinephrine (first-line)</option>
+                    <option value="epi">Epinephrine</option>
+                    <option value="dopa">Dopamine</option>
+                    <option value="dobu">Dobutamine</option>
+                </select>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Current rate (mL/hr)</label>
+                        <input id="vasoCurrentRate" type="number" value="10" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Patient weight (kg)</label>
+                        <input id="vasoWeight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+
+                <select id="vasoChange" onchange="toggleMAPInput()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                    <option value="increase005">Increase by 0.05 mcg/kg/min</option>
+                    <option value="increase01">Increase by 0.1 mcg/kg/min</option>
+                    <option value="decrease005">Decrease by 0.05 mcg/kg/min</option>
+                    <option value="decrease01">Decrease by 0.1 mcg/kg/min</option>
+                    <option value="targetMAP" selected>Target MAP (Conservative / Moderate / Aggressive)</option>
+                </select>
+
+                <div id="mapInputGroup">
+                    <label class="block text-sm text-zinc-400 mb-2">Current MAP (mmHg) — arterial line</label>
+                    <input id="currentMAP" type="number" value="58" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center mb-4">
+
+                    <label class="block text-sm text-zinc-400 mb-2">Target MAP (mmHg) — default 65 mmHg</label>
+                    <input id="targetMAP" type="number" value="65" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center mb-4">
+
+                    <label class="block text-sm text-zinc-400 mb-2">Titration Intensity</label>
+                    <select id="titrationIntensity" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                        <option value="conservative">Conservative (safest, smallest steps)</option>
+                        <option value="moderate" selected>Moderate (standard)</option>
+                        <option value="aggressive">Aggressive (for refractory shock)</option>
+                    </select>
+                </div>
+
+                <button onclick="calcVasoTitration()" 
+                        class="w-full bg-teal-700 hover:bg-teal-800 py-6 rounded-3xl text-2xl font-semibold">
+                    Calculate New Rate
+                </button>
+
+                <div id="vasoResult" class="hidden result-box bg-zinc-800 rounded-3xl p-6 text-center">
+                    <div id="vasoNewRate" class="text-teal-400 text-7xl font-semibold"></div>
+                    <div id="vasoLabel" class="text-xl mt-2"></div>
+                    <div id="vasoExplanation" class="text-sm text-zinc-400 mt-4"></div>
+                    <div class="text-xs text-amber-400 mt-6">
+                        ⚠️ These are suggestions only. Always use clinical judgment.<br>
+                        Reassess frequently with arterial line • Titrate to lowest effective dose
+                    </div>
+                </div>
+            </div>
+        </div>               
+
+        <!-- IV Medication Calculator -->
+        <div id="convert" class="hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="back()" 
+        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
+    ←
+</button>
+                <h2 class="text-3xl font-semibold">IV Med Calculator</h2>
+            </div>
+            <div class="card bg-zinc-900 rounded-3xl p-6 space-y-6">
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">Medication</label>
+                    <select id="medSelect" onchange="updateMed()" class="w-full bg-zinc-800 text-white rounded-2xl p-4 text-lg border border-zinc-700">
+                        <option value="norepi">Norepinephrine – mcg/kg/min</option>
+                        <option value="epi">Epinephrine – mcg/kg/min</option>
+                        <option value="dopa">Dopamine – mcg/kg/min</option>
+                        <option value="dobu">Dobutamine – mcg/kg/min</option>
+                        <option value="vaso">Vasopressin – units/min</option>
+                        <option value="mil">Milrinone – mcg/kg/min</option>
+                        <option value="ntg">Nitroglycerin – mcg/min</option>
+                        <option value="ntp">Nitroprusside – mcg/kg/min</option>
+                        <option value="prop">Propofol – mcg/kg/min (sedation)</option>
+                        <option value="mid">Midazolam – mg/hr</option>
+                        <option value="fent">Fentanyl – mcg/hr</option>
+                        <option value="dex">Dexmedetomidine – mcg/kg/hr</option>
+                        <option value="ket">Ketamine – mg/kg/hr</option>
+                        <option value="roc">Rocuronium – mcg/kg/min (paralytic)</option>
+                        <option value="cis">Cisatracurium – mcg/kg/min (paralytic)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2" id="doseLabel">Desired Dose (mcg/kg/min)</label>
+                        <input id="dose" type="number" step="0.01" value="0.1" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Patient Weight (kg)</label>
+                        <input id="weight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">Concentration (standard)</label>
+                    <input id="conc" type="text" readonly class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4 text-lg">
+                </div>
+
+                <button onclick="calcMedDrip()" class="w-full bg-teal-700 hover:bg-emerald-500 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+                    Calculate mL/hr
+                </button>
+
+                <div id="medResult" class="result-box hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
+                    <div id="rateDisplay" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
+                    <div id="rateLabel" class="text-2xl text-emerald-300 mt-4"></div>
+                </div>
+            </div>
+            <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Always verify exact bag concentration and hospital protocol</p>
+        </div>
+
+        <!-- IV Drip Rate Calculator -->
+        <div id="drip" class="hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="back()" class="text-3xl text-teal-400">←</button>
+                <h2 class="text-3xl font-semibold">IV Drip Rate</h2>
+            </div>
+
+            <div class="flex bg-zinc-900 rounded-3xl p-1 mb-6 border border-zinc-700">
+                <button onclick="setDripMode('drops')" id="modeDrops" class="flex-1 py-3 rounded-3xl font-medium transition-all">Drops/min</button>
+                <button onclick="setDripMode('dropshr')" id="modeDropshr" class="flex-1 py-3 rounded-3xl font-medium transition-all">Drops/hr</button>
+                <button onclick="setDripMode('mlhr')" id="modeMlhr" class="flex-1 py-3 rounded-3xl font-medium transition-all">mL/hr</button>
+                <button onclick="setDripMode('mcgmin')" id="modeMcgmin" class="flex-1 py-3 rounded-3xl font-medium transition-all">mcg/min</button>
+                <button onclick="setDripMode('mcghr')" id="modeMcghr" class="flex-1 py-3 rounded-3xl font-medium transition-all">mcg/hr</button>
+            </div>
+
+            <div class="card bg-zinc-900 rounded-3xl p-6 space-y-6">
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">Volume to infuse (mL)</label>
+                    <input id="vol" type="number" value="500" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2" id="timeLabel">Infusion Time (minutes)</label>
+                    <input id="time" type="number" value="30" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                </div>
+
+                <div id="dropSection">
+                    <label class="block text-sm text-zinc-400 mb-2">Drop factor (gtt/mL)</label>
+                    <select id="drop" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                        <option value="10">10 gtt/mL (macro)</option>
+                        <option value="15" selected>15 gtt/mL (macro)</option>
+                        <option value="20">20 gtt/mL (macro)</option>
+                        <option value="60">60 gtt/mL (micro)</option>
+                    </select>
+                </div>
+
+                <div id="doseSection" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2">Concentration (mcg/mL)</label>
+                        <input id="concDrip" type="number" value="16" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-zinc-400 mb-2" id="doseLabelDrip">Desired Dose (mcg/min)</label>
+                        <input id="doseDrip" type="number" step="0.01" value="10" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+
+                <button onclick="calcDrip()" class="w-full bg-teal-700 hover:bg-emerald-500 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all" id="calcButton">
+                    Calculate
+                </button>
+
+                <div id="dripResult" class="result-box hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
+                    <div id="dripRate" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
+                    <div id="dripUnit" class="text-2xl text-emerald-300 mt-4"></div>
+                </div>
+            </div>
+            <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Always verify with pump settings and hospital protocol</p>
+        </div>
+
+                <!-- ====================== UNIT CONVERTER ====================== -->
+        <div id="units" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Unit Converter</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+
+            <div class="p-4 space-y-8">
+                <!-- From -->
+                <div>
+                    <label class="text-zinc-400 text-sm block mb-2">From</label>
+                    <input id="fromValue" type="number" placeholder="Value" 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400 mb-3">
+                    <select id="fromUnit" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- To -->
+                <div>
+                    <label class="text-zinc-400 text-sm block mb-2">To</label>
+                    <input id="toValue" type="number" placeholder="Result" readonly 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none mb-3">
+                    <select id="toUnit" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button onclick="convertUnits()" 
+                            class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                        Convert →
+                    </button>
+                    <button onclick="reverseConversion()" 
+                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                        ← Reverse
+                    </button>
+                    <button onclick="clearConverter()" 
+                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                        Clear
+                    </button>
+                </div>
+
+                <div id="convertResult" class="hidden bg-zinc-900 rounded-3xl p-6 text-center">
+                    <div class="text-emerald-400 text-4xl font-bold" id="resultValue"></div>
+                </div>
+            </div>
+        </div>                                              
+
+                              <!-- ====================== EMERGENCY SECTION (Clean - RSI & ETT removed) ====================== -->
+        <div id="emergency" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Emergency</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+
+            <div class="px-4 space-y-4">
+                <!-- Category Tabs -->
+                <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+                    <button onclick="showEmergencySub('acls')" class="flex-1 py-3 px-4 rounded-3xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold whitespace-nowrap">ACLS</button>
+                    <button onclick="showEmergencySub('pals')" class="flex-1 py-3 px-4 rounded-3xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold whitespace-nowrap">PALS</button>
+                    <button onclick="showEmergencySub('nrp')" class="flex-1 py-3 px-4 rounded-3xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold whitespace-nowrap">NRP</button>
+                </div>
+
+                <!-- ACLS Content - Expanded with all key medications -->
+                <div id="acls" class="emergency-sub">
+                    <h3 class="text-red-400 text-xl font-semibold mb-4">ACLS Medications</h3>
+                    
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Epinephrine 1 mg IV/IO every 3-5 minutes</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> Alpha- and beta-adrenergic agonist (vasopressor).<br>
+                            <strong>Use:</strong> Cardiac arrest (all rhythms) – improves coronary and cerebral perfusion.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Amiodarone 300 mg IV/IO (then 150 mg if needed)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> Class III antiarrhythmic.<br>
+                            <strong>Use:</strong> Refractory ventricular fibrillation / pulseless ventricular tachycardia (VF/pVT).<br>
+                            <strong>Alternative:</strong> Lidocaine 1–1.5 mg/kg IV/IO.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Lidocaine 1–1.5 mg/kg IV/IO (then 0.5–0.75 mg/kg)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Alternative to amiodarone for refractory VF/pVT.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Magnesium Sulfate 1–2 g IV/IO</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Torsades de pointes or suspected hypomagnesemia.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Atropine (no longer routinely recommended for asystole/PEA)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Note:</strong> Removed from routine ACLS algorithm in recent guidelines. May still be used for symptomatic bradycardia in specific cases.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Vasopressin (no longer recommended)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Note:</strong> Removed from ACLS cardiac arrest algorithm.
+                        </div>
+                    </details>
+                </div>
+
+                <!-- PALS Content -->
+                <div id="pals" class="emergency-sub hidden">
+                    <h3 class="text-red-400 text-xl font-semibold mb-4">PALS Medications</h3>
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Epinephrine 0.01 mg/kg IV/IO (max 1 mg) q3-5 min</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Cardiac arrest and symptomatic bradycardia with poor perfusion.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Amiodarone 5 mg/kg IV/IO (max 300 mg)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Refractory VF/pVT or unstable VT.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Adenosine 0.1 mg/kg rapid IV push (max 6 mg), then 0.2 mg/kg (max 12 mg)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Stable supraventricular tachycardia (SVT).
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Atropine 0.02 mg/kg IV (min 0.1 mg)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Symptomatic bradycardia.
+                        </div>
+                    </details>
+                </div>
+
+                <!-- NRP Content -->
+                <div id="nrp" class="emergency-sub hidden">
+                    <h3 class="text-red-400 text-xl font-semibold mb-4">NRP Medications</h3>
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Epinephrine 0.01–0.03 mg/kg IV/IO (0.1–0.3 mL/kg of 1:10,000)</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> HR <60 bpm despite adequate ventilation and chest compressions.<br>
+                            <strong>Notes:</strong> Preferred IV/IO route; repeat every 3–5 minutes if needed.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Normal Saline or Blood 10 mL/kg IV/IO</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Use:</strong> Suspected hypovolemia or acute blood loss.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>                                                           
+
+        <!-- ABG Interpreter -->
+        <div id="abg" class="hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="back()" class="text-3xl text-teal-400">←</button>
+                <h2 class="text-3xl font-semibold">ABG Interpreter</h2>
+            </div>
+            <div class="card bg-zinc-900 rounded-3xl p-6 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-sm text-zinc-400 mb-2">pH</label>
+                        <input id="ph" type="number" step="0.01" placeholder="7.40" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                    <div><label class="block text-sm text-zinc-400 mb-2">PaCO₂ (mmHg)</label>
+                        <input id="pco2" type="number" placeholder="40" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-sm text-zinc-400 mb-2">HCO₃ (mEq/L)</label>
+                        <input id="hco3" type="number" step="0.1" placeholder="24" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                    <div><label class="block text-sm text-zinc-400 mb-2">PaO₂ (mmHg)</label>
+                        <input id="po2" type="number" placeholder="90" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                    </div>
+                </div>
+                <button onclick="interpretABG()" class="w-full bg-teal-700 hover:bg-emerald-500 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+                    Interpret ABG
+                </button>
+                <div id="abgResult" class="result-box hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-8 space-y-5">
+                    <div id="abgValues" class="text-sm text-zinc-400"></div>
+                    <div id="abgMain" class="text-2xl font-semibold text-teal-400"></div>
+                    <div id="abgDetails" class="text-base leading-relaxed text-zinc-300 space-y-3"></div>
+                    <div class="text-xs text-zinc-500 pt-4 border-t border-zinc-700">
+                        6-step approach • Always correlate with clinical picture
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Not a substitute for clinical judgment</p>
+        </div>
+
+        <!-- Glasgow Coma Scale -->
+        <div id="gcs" class="hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="back()" class="text-3xl text-teal-400">←</button>
+                <h2 class="text-3xl font-semibold">Glasgow Coma Scale</h2>
+            </div>
+            <div class="card bg-zinc-900 rounded-3xl p-6 space-y-8">
+                <div>
+                    <div class="text-teal-400 text-lg font-medium mb-4">Eye Opening</div>
+                    <div class="grid grid-cols-3 gap-3" id="eyeButtons">
+                        <button onclick="updateGCS('eye', 4)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">4</div><div class="label">Spontaneous</div></button>
+                        <button onclick="updateGCS('eye', 3)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">3</div><div class="label">To voice</div></button>
+                        <button onclick="updateGCS('eye', 2)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">2</div><div class="label">To pain</div></button>
+                        <button onclick="updateGCS('eye', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3"><div class="points">1</div><div class="label">None</div></button>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-teal-400 text-lg font-medium mb-4">Verbal Response</div>
+                    <div class="grid grid-cols-3 gap-3" id="verbalButtons">
+                        <button onclick="updateGCS('verbal', 5)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">5</div><div class="label">Oriented</div></button>
+                        <button onclick="updateGCS('verbal', 4)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">4</div><div class="label">Confused</div></button>
+                        <button onclick="updateGCS('verbal', 3)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">3</div><div class="label">Inappropriate</div></button>
+                        <button onclick="updateGCS('verbal', 2)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">2</div><div class="label">Incomprehensible</div></button>
+                        <button onclick="updateGCS('verbal', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3"><div class="points">1</div><div class="label">None</div></button>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-teal-400 text-lg font-medium mb-4">Motor Response</div>
+                    <div class="grid grid-cols-3 gap-3" id="motorButtons">
+                        <button onclick="updateGCS('motor', 6)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">6</div><div class="label">Obeys</div></button>
+                        <button onclick="updateGCS('motor', 5)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">5</div><div class="label">Localizes</div></button>
+                        <button onclick="updateGCS('motor', 4)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">4</div><div class="label">Withdraws</div></button>
+                        <button onclick="updateGCS('motor', 3)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">3</div><div class="label">Flexion</div></button>
+                        <button onclick="updateGCS('motor', 2)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">2</div><div class="label">Extension</div></button>
+                        <button onclick="updateGCS('motor', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3"><div class="points">1</div><div class="label">None</div></button>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-950 border border-teal-400/50 rounded-3xl p-8 text-center">
+                    <div class="text-teal-400 text-sm mb-1">Total GCS Score</div>
+                    <div id="gcsTotal" class="text-7xl font-black text-teal-400">15</div>
+                    <div id="gcsCategory" class="text-xl text-emerald-300 mt-2">Mild (13-15)</div>
+                </div>
+
+                <button onclick="resetGCS()" class="w-full bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-lg font-medium">
+                    Reset All Scores
+                </button>
+            </div>
+            <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Use best response only</p>
+        </div>
+                <!-- RASS SCREEN - full working version -->
+                <!-- RASS SCREEN - with large back arrow -->
+                <!-- RASS SCREEN - back arrow now matches every other page -->
+        <div id="rass" class="hidden p-6">
+            <!-- Back arrow - exact same style as all other pages -->
+            <div class="flex items-center gap-3 mb-6">
+                <button onclick="back()" class="text-3xl text-teal-400">←</button>
+                <h2 class="text-3xl font-semibold">RASS</h2>
+            </div>
+            
+            <div id="rassButtons" class="grid grid-cols-2 gap-3"></div>
+            
+            <div class="mt-8 text-center">
+                <div class="text-8xl font-bold text-teal-400" id="rassScore">0</div>
+                <div id="rassDescription" class="text-2xl mt-3 text-zinc-300"></div>
+            </div>
+        </div>
+    </div>
+
+                       <!-- ====================== INTUBATION SECTION ====================== -->
+
+        <!-- Intubation Sub-Menu -->
+        <div id="intubation" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Intubation</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+
+            <div class="space-y-4 px-4">
+                <div onclick="showIntubationSub('rsi')" class="bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">RSI Drugs</div>
+                    <div class="text-zinc-400 text-sm mt-1">Induction • Paralytics • Contraindications</div>
+                </div>
+                <div onclick="showIntubationSub('ett')" class="bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">ETT Sizing & Depth</div>
+                    <div class="text-zinc-400 text-sm mt-1">Adult • Pediatric • Depth guide</div>
+                </div>
+                <div onclick="showIntubationSub('ibw')" class="bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-zinc-700 active:scale-[0.98] transition-all">
+                    <div class="text-teal-400 text-2xl font-semibold">Ideal Body Weight</div>
+                    <div class="text-zinc-400 text-sm mt-1">Devine formula • Tidal volume guide</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== RSI DRUGS SCREEN ====================== -->
+        <div id="rsi" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">RSI Drugs</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+            <div class="p-4 space-y-8">
+                <div>
+                    <h3 class="text-teal-400 text-xl font-semibold mb-4">Induction Agents</h3>
+                    
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Etomidate 0.3 mg/kg IV</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> GABA agonist – minimal hemodynamic effects.<br>
+                            <strong>Onset:</strong> 30-60 seconds<br>
+                            <strong>Duration:</strong> 3-8 minutes<br>
+                            <strong>Best for:</strong> Shock, trauma, unstable patients.<br>
+                            <strong>Notes:</strong> Single dose only due to adrenal suppression.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Ketamine 1.5-2 mg/kg IV</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> NMDA antagonist – dissociative anesthetic.<br>
+                            <strong>Onset:</strong> 45-60 seconds<br>
+                            <strong>Duration:</strong> 10-20 minutes<br>
+                            <strong>Best for:</strong> Hypotension, asthma, bronchospasm.<br>
+                            <strong>Notes:</strong> Maintains blood pressure and airway reflexes.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Propofol 1-2 mg/kg IV</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> GABA agonist – rapid sedation.<br>
+                            <strong>Onset:</strong> 30-60 seconds<br>
+                            <strong>Duration:</strong> 5-10 minutes<br>
+                            <strong>Best for:</strong> Hemodynamically stable patients.<br>
+                            <strong>Notes:</strong> Can cause hypotension – reduce dose if unstable.
+                        </div>
+                    </details>
+                </div>
+
+                <div>
+                    <h3 class="text-teal-400 text-xl font-semibold mb-4">Paralytics</h3>
+                    
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Succinylcholine 1.5-2 mg/kg IV</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> Depolarizing blocker – fastest onset.<br>
+                            <strong>Onset:</strong> 45-60 seconds<br>
+                            <strong>Duration:</strong> 6-10 minutes<br>
+                            <strong>Contraindications:</strong> Hyperkalemia, burns >24h, crush injury, malignant hyperthermia, neuromuscular disease.
+                        </div>
+                    </details>
+
+                    <details class="bg-zinc-800 rounded-3xl p-5 mb-4">
+                        <summary class="text-teal-400 text-lg font-semibold cursor-pointer">Rocuronium 1-1.2 mg/kg IV</summary>
+                        <div class="mt-4 text-zinc-300 text-sm leading-relaxed">
+                            <strong>Mechanism:</strong> Non-depolarizing blocker.<br>
+                            <strong>Onset:</strong> 60-90 seconds<br>
+                            <strong>Duration:</strong> 30-60 minutes<br>
+                            <strong>Notes:</strong> Reversible with sugammadex if available.
+                        </div>
+                    </details>
+                </div>
+
+                <div class="text-xs text-zinc-500 mt-8 text-center border-t border-zinc-700 pt-6">
+                    RSI is a team procedure. Always prepare backup airway devices.
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== ETT SIZING & DEPTH SCREEN ====================== -->
+        <div id="ett" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">ETT Sizing & Depth</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+
+            <div class="p-4">
+                <select id="ettAge" onchange="calcETT()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl mb-6">
+                    <option value="">Select age group</option>
+                    <option value="newborn">Newborn</option>
+                    <option value="infant">Infant</option>
+                    <option value="1">1 year</option>
+                    <option value="2">2 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="6-8">6-8 years</option>
+                    <option value="9-11">9-11 years</option>
+                    <option value="adult">Adult</option>
+                </select>
+
+                <div id="ettResult" class="hidden bg-zinc-800 rounded-3xl p-6 text-center">
+                    <div class="text-2xl">Tube size: <span id="ettSize" class="font-semibold text-teal-400"></span></div>
+                    <div class="text-2xl mt-4">Depth: <span id="ettDepth" class="font-semibold text-teal-400"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== IDEAL BODY WEIGHT SCREEN ====================== -->
+        <div id="ibw" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Ideal Body Weight</h2>
+                    <div class="w-12"></div>
+                </div>
+            </div>
+
+            <div class="p-4 space-y-6">
+                <div class="flex gap-3">
+                    <button onclick="selectGender('male')" id="maleBtn" class="flex-1 py-4 rounded-3xl border-2 border-emerald-400 bg-zinc-900 text-white font-semibold">Male</button>
+                    <button onclick="selectGender('female')" id="femaleBtn" class="flex-1 py-4 rounded-3xl border-2 border-zinc-700 hover:border-zinc-500 text-white font-semibold">Female</button>
+                </div>
+
+                <div>
+                    <label class="text-zinc-400 text-sm block mb-2">Patient Height</label>
+                    <div class="flex gap-2">
+                        <input id="heightValue" type="number" placeholder="Height" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                        <select id="heightUnit" class="bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400 w-28">
+                            <option value="inches">inches</option>
+                            <option value="cm">cm</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="calcIBW()" class="w-full bg-teal-600 hover:bg-emerald-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                    Calculate IBW
+                </button>
+
+                <div id="ibwResult" class="hidden bg-zinc-900 rounded-3xl p-6 text-center">
+                    <div class="text-teal-400 text-5xl font-bold" id="ibwValue"></div>
+                    <div class="text-zinc-400 mt-1">kg Ideal Body Weight</div>
+                    <div class="mt-4 text-sm text-zinc-400" id="tidalRange"></div>
+                </div>
+
+                <button onclick="resetIBW()" class="w-full text-zinc-400 py-3 text-sm">Reset</button>
+            </div>
+        </div>    
+        
+                     <!-- ====================== PAYWALL SCREEN ====================== -->
+        <div id="paywall" class="hidden min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+            <div class="max-w-md w-full">
+                <div class="text-center mb-10">
+                    <img src="logo.png" alt="VitalAcuity" class="h-16 mx-auto mb-6">
+                    <h1 class="text-4xl font-bold tracking-tight text-white">Unlock VitalAcuity</h1>
+                    <p class="text-zinc-400 mt-3 text-lg">Essential bedside tools for RRTs & ICU nurses</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Monthly -->
+                    <div onclick="window.open('https://vitalacuity.lemonsqueezy.com/checkout/buy/7be04b1b-2cf1-40bc-a187-08746626dd30', '_blank')" 
+                         class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-3xl p-6 cursor-pointer transition-all active:scale-[0.98]">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="text-xl font-semibold">Monthly</div>
+                                <div class="text-5xl font-bold text-white mt-1">$6.99</div>
+                                <div class="text-sm text-zinc-400">per month • Cancel anytime</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Annual - Best Value -->
+                    <div onclick="window.open('https://vitalacuity.lemonsqueezy.com/checkout/buy/5d966751-3699-4307-866a-1ed063709042', '_blank')" 
+                         class="bg-zinc-900 hover:bg-zinc-800 border-2 border-teal-500 rounded-3xl p-6 cursor-pointer transition-all active:scale-[0.98] relative overflow-hidden">
+                        <div class="absolute -top-3 right-6 bg-teal-500 text-white text-xs font-bold px-5 py-1 rounded-full">BEST VALUE • SAVE 28%</div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="text-xl font-semibold">Annual</div>
+                                <div class="text-5xl font-bold text-white mt-1">$59.99</div>
+                                <div class="text-sm text-teal-400">Only $5.00/month</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lifetime -->
+                    <div onclick="window.open('https://vitalacuity.lemonsqueezy.com/checkout/buy/c0d1bd7d-7383-4b4d-bf08-da6199c9a72f', '_blank')" 
+                         class="bg-zinc-900 hover:bg-zinc-800 border border-amber-500 rounded-3xl p-6 cursor-pointer transition-all active:scale-[0.98]">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="text-xl font-semibold">Lifetime</div>
+                                <div class="text-5xl font-bold text-white mt-1">$129.99</div>
+                                <div class="text-sm text-amber-400">One-time payment • Forever access</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-10">
+                    <button onclick="showUnlockScreen()" 
+                            class="text-teal-400 hover:text-teal-300 text-sm font-medium">
+                        I already have a license key →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================== LICENSE KEY INPUT SCREEN ====================== -->
+        <div id="unlockScreen" class="hidden min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+            <div class="max-w-md w-full">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-white">Enter License Key</h1>
+                    <p class="text-zinc-400 mt-2">Unlock the full version of VitalAcuity</p>
+                </div>
+
+                <input id="licenseKey" type="text" placeholder="VA-XXXXX-XXXXX-XXXXX" 
+                       class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-6 py-5 text-lg focus:outline-none focus:border-teal-400 mb-6 font-mono">
+
+                <button onclick="unlockApp()" 
+                        class="w-full bg-teal-600 hover:bg-teal-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                    Unlock App
+                </button>
+
+                <div class="text-center mt-8">
+                    <button onclick="hideUnlockScreen()" class="text-zinc-400 hover:text-white text-sm">Cancel</button>
+                </div>
+            </div>
+        </div>   
+
+    <script>
+            
+        let gcsScores = { eye: 4, verbal: 5, motor: 6 };
+        let currentMed = "norepi";
+        let dripMode = "drops";
+
+                // Strong device-bound unlock system
+        function getDeviceFingerprint() {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            ctx.textBaseline = "top";
+            ctx.font = "14px Arial";
+            ctx.fillText("VitalAcuity", 2, 2);
+            return btoa(
+                canvas.toDataURL() +
+                navigator.userAgent +
+                screen.width + "x" + screen.height +
+                navigator.language +
+                new Date().getTimezoneOffset()
+            ).slice(0, 40);
+        }
+
+        function checkIfUnlocked() {
+            const savedHash = localStorage.getItem('va_unlock_hash');
+            const savedExpiry = localStorage.getItem('va_expiry');
+
+            if (!savedHash || !savedExpiry) {
+                navigate('paywall');
+                return;
+            }
+
+            if (Date.now() > parseInt(savedExpiry)) {
+                alert("Your license has expired. Please renew.");
+                localStorage.removeItem('va_unlock_hash');
+                localStorage.removeItem('va_expiry');
+                navigate('paywall');
+                return;
+            }
+
+            const currentFingerprint = getDeviceFingerprint();
+            const expectedHash = btoa(savedHash + currentFingerprint).slice(0, 32);
+
+            if (localStorage.getItem('va_current_hash') !== expectedHash) {
+                alert("This license key is not valid on this device.");
+                navigate('paywall');
+                return;
+            }
+
+            navigate('home');
+        }
+
+        function unlockApp() {
+            const key = document.getElementById('licenseKey').value.trim();
+
+            if (key.length < 12) {
+                alert("Please enter a valid license key.");
+                return;
+            }
+
+            const fingerprint = getDeviceFingerprint();
+            const combined = key + fingerprint;
+            const hash = btoa(combined).slice(0, 40);
+
+            let days = 30;
+            if (key.includes("ANNUAL") || key.includes("YEAR")) days = 365;
+            if (key.includes("LIFETIME")) days = 36500;
+
+            const expiry = Date.now() + (days * 24 * 60 * 60 * 1000);
+
+            localStorage.setItem('va_unlock_hash', hash);
+            localStorage.setItem('va_expiry', expiry.toString());
+            localStorage.setItem('va_current_hash', btoa(hash + fingerprint).slice(0, 32));
+
+            alert("✅ VitalAcuity successfully unlocked on this device!");
+            navigate('home');
+        }
+
+        function showUnlockScreen() {
+            document.getElementById('paywall').classList.add('hidden');
+            document.getElementById('unlockScreen').classList.remove('hidden');
+        }
+
+        function hideUnlockScreen() {
+            document.getElementById('unlockScreen').classList.add('hidden');
+            document.getElementById('paywall').classList.remove('hidden');
+        }
+        
+
+        function back() {
+            // IV Tools group
+            if (document.getElementById('iv') && !document.getElementById('iv').classList.contains('hidden')) {
+                navigate('home');
+            } 
+            else if (['convert', 'med', 'drip', 'sedation', 'vaso'].some(id => {
+                const el = document.getElementById(id);
+                return el && !el.classList.contains('hidden');
+            })) {
+                showIVSub('main');
+            } 
+
+            // Intubation group - Fixed version
+            else if (['rsi', 'ett', 'ibw'].some(id => {
+                const el = document.getElementById(id);
+                return el && !el.classList.contains('hidden');
+            })) {
+                showIntubationSub('main');        // This should now reliably show the submenu
+            } 
+
+            // Default
+            else {
+                navigate('home');
+            }
+        }
+
+        function navigate(screen) {
+            // Hide EVERY possible screen to prevent ghosting
+            document.querySelectorAll('#home, #iv, #intubation, #rsi, #ett, #ibw, #abg, #gcs, #rass, #units, #drip, #emergency, #convert, #vaso, #sedation').forEach(d => {
+                if (d) d.classList.add('hidden');
+            });
+            const target = document.getElementById(screen);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+        }
+
+        function showEmergencySub(sub) {
+            document.querySelectorAll('.emergency-sub').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(sub);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function showIVSub(sub) {
+            document.getElementById('iv').classList.add('hidden');
+            document.querySelectorAll('#convert, #med, #drip, #sedation, #vaso').forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+
+            if (sub === 'main') {
+                document.getElementById('iv').classList.remove('hidden');
+            } else {
+                const target = document.getElementById(sub);
+                if (target) target.classList.remove('hidden');
+            }
+        }
+
+        function showIntubationSub(sub) {
+            // Hide the Intubation menu and all its child screens
+            document.getElementById('intubation').classList.add('hidden');
+            document.querySelectorAll('#rsi, #ett, #ibw').forEach(el => {
+                if (el) el.classList.add('hidden');
+            });
+
+            if (sub === 'main') {
+                // Show the Intubation submenu
+                document.getElementById('intubation').classList.remove('hidden');
+            } else {
+                // Show the requested tool
+                const target = document.getElementById(sub);
+                if (target) target.classList.remove('hidden');
+            }
+        }
+
+        let ibwGender = 'male';
+
+        function selectGender(gender) {
+            ibwGender = gender;
+            document.getElementById('maleBtn').classList.toggle('border-emerald-400', gender === 'male');
+            document.getElementById('maleBtn').classList.toggle('border-zinc-700', gender !== 'male');
+            document.getElementById('femaleBtn').classList.toggle('border-emerald-400', gender === 'female');
+            document.getElementById('femaleBtn').classList.toggle('border-zinc-700', gender !== 'female');
+        }
+
+                                function calcIBW() {
+            const value = parseFloat(document.getElementById('heightValue').value);
+            const unit = document.getElementById('heightUnit').value;
+
+            if (!value) {
+                alert("Please enter a height value");
+                return;
+            }
+
+            let inches = (unit === 'cm') ? (value / 2.54) : value;
+            let ibw = ibwGender === 'male' 
+                ? 50 + 2.3 * (inches - 60) 
+                : 45.5 + 2.3 * (inches - 60);
+
+            ibw = Math.round(ibw * 10) / 10;
+
+            // Updated ranges as requested
+            const ardsLow = Math.round(ibw * 4);
+            const ardsHigh = Math.round(ibw * 6);
+            const nonArds = Math.round(ibw * 8);
+
+            document.getElementById('ibwValue').textContent = ibw;
+            document.getElementById('tidalRange').innerHTML = 
+                `<span class="text-red-400">Suggested tidal volume:</span><br>
+                 <strong>ARDS / lung-protective:</strong> ${ardsLow} – ${ardsHigh} mL (4–6 mL/kg IBW)<br>
+                 <strong>Non-ARDS:</strong> ${nonArds} mL (8 mL/kg IBW)`;
+            
+            document.getElementById('ibwResult').classList.remove('hidden');
+        }
+
+        function resetIBW() {
+            document.getElementById('heightValue').value = '';
+            document.getElementById('ibwResult').classList.add('hidden');
+        }
+
+        function calcETT() {
+            const age = document.getElementById('ettAge').value;
+            let size = '';
+            let depth = '';
+            if (age === 'newborn') { size = '3.0-3.5'; depth = '9-10 cm'; }
+            else if (age === 'infant') { size = '3.5-4.0'; depth = '10-11 cm'; }
+            else if (age === '1') { size = '4.0'; depth = '11-12 cm'; }
+            else if (age === '2') { size = '4.5'; depth = '12-13 cm'; }
+            else if (age === '3-5') { size = '5.0'; depth = '13-14 cm'; }
+            else if (age === '6-8') { size = '5.5'; depth = '14-15 cm'; }
+            else if (age === '9-11') { size = '6.0'; depth = '15-16 cm'; }
+            else if (age === 'adult') { size = '7.0-8.0'; depth = '21-23 cm (male) / 19-21 cm (female)'; }
+            document.getElementById('ettSize').textContent = size || '—';
+            document.getElementById('ettDepth').textContent = depth || '—';
+            document.getElementById('ettResult').classList.remove('hidden');
+        }        
+
+        function setDripMode(mode) {
+            dripMode = mode;
+            const buttons = {
+                drops: document.getElementById('modeDrops'),
+                dropshr: document.getElementById('modeDropshr'),
+                mlhr: document.getElementById('modeMlhr'),
+                mcgmin: document.getElementById('modeMcgmin'),
+                mcghr: document.getElementById('modeMcghr')
+            };
+            const dropSection = document.getElementById('dropSection');
+            const doseSection = document.getElementById('doseSection');
+            const calcButton = document.getElementById('calcButton');
+            const dripUnit = document.getElementById('dripUnit');
+            const timeLabel = document.getElementById('timeLabel');
+            const doseLabelDrip = document.getElementById('doseLabelDrip');
+
+            Object.values(buttons).forEach(btn => btn.classList.remove('bg-teal-700', 'text-white'));
+
+            let buttonText = "Calculate";
+            let unitText = "";
+
+            if (mode === "drops") {
+                buttons.drops.classList.add('bg-teal-700', 'text-white');
+                dropSection.style.display = 'block';
+                doseSection.classList.add('hidden');
+                timeLabel.textContent = "Infusion Time (minutes)";
+                buttonText = "Calculate Drops per Minute";
+                unitText = "drops per minute";
+            } else if (mode === "dropshr") {
+                buttons.dropshr.classList.add('bg-teal-700', 'text-white');
+                dropSection.style.display = 'block';
+                doseSection.classList.add('hidden');
+                timeLabel.textContent = "Infusion Time (minutes)";
+                buttonText = "Calculate Drops per Hour";
+                unitText = "drops per hour";
+            } else if (mode === "mlhr") {
+                buttons.mlhr.classList.add('bg-teal-700', 'text-white');
+                dropSection.style.display = 'none';
+                doseSection.classList.add('hidden');
+                timeLabel.textContent = "Infusion Time (hours)";
+                buttonText = "Calculate mL per Hour";
+                unitText = "mL per hour";
+            } else if (mode === "mcgmin") {
+                buttons.mcgmin.classList.add('bg-teal-700', 'text-white');
+                dropSection.style.display = 'none';
+                doseSection.classList.remove('hidden');
+                timeLabel.textContent = "Infusion Time (hours)";
+                doseLabelDrip.textContent = "Desired Dose (mcg/min)";
+                buttonText = "Calculate mL per Hour";
+                unitText = "mL per hour";
+            } else if (mode === "mcghr") {
+                buttons.mcghr.classList.add('bg-teal-700', 'text-white');
+                dropSection.style.display = 'none';
+                doseSection.classList.remove('hidden');
+                timeLabel.textContent = "Infusion Time (hours)";
+                doseLabelDrip.textContent = "Desired Dose (mcg/hr)";
+                buttonText = "Calculate mL per Hour";
+                unitText = "mL per hour";
+            }
+
+            calcButton.textContent = buttonText;
+            dripUnit.textContent = unitText;
+        }
+
+        function calcDrip() {
+            const vol = parseFloat(document.getElementById('vol').value);
+            let time = parseFloat(document.getElementById('time').value);
+            const drop = parseFloat(document.getElementById('drop')?.value || 0);
+            const doseDrip = parseFloat(document.getElementById('doseDrip')?.value || 0);
+            const concDrip = parseFloat(document.getElementById('concDrip')?.value || 16);
+
+            if (isNaN(vol) || isNaN(time) || vol <= 0 || time <= 0) {
+                alert("Please enter valid volume and time.");
+                return;
+            }
+
+            let result = 0;
+            let unitText = "";
+
+            if (dripMode === "drops" || dripMode === "dropshr") {
+                result = (vol * drop) / time;
+                if (dripMode === "dropshr") result *= 60;
+                result = Math.round(result);
+                unitText = dripMode === "drops" ? "drops per minute" : "drops per hour";
+            } else if (dripMode === "mlhr") {
+                result = Math.round((vol / time) * 60 * 10) / 10;
+                unitText = "mL per hour";
+            } else if (dripMode === "mcgmin" || dripMode === "mcghr") {
+                if (isNaN(concDrip) || concDrip <= 0) {
+                    alert("Please enter a valid concentration.");
+                    return;
+                }
+                let ratePerMin = dripMode === "mcgmin" ? doseDrip : doseDrip / 60;
+                result = (ratePerMin * 60) / concDrip;
+                result = Math.round(result * 10) / 10;
+                unitText = "mL per hour";
+            }
+
+            document.getElementById('dripRate').textContent = result;
+            document.getElementById('dripUnit').textContent = unitText;
+            document.getElementById('dripResult').classList.remove('hidden');
+        }
+
+        function updateMed() {
+            currentMed = document.getElementById('medSelect').value;
+            const concInput = document.getElementById('conc');
+            const doseLabel = document.getElementById('doseLabel');
+
+            switch(currentMed) {
+                case "norepi": concInput.value = "16 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "epi": concInput.value = "16 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "dopa": concInput.value = "1600 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "dobu": concInput.value = "2500 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "vaso": concInput.value = "0.2 units/mL"; doseLabel.textContent = "Desired Dose (units/min)"; break;
+                case "mil": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "ntg": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/min)"; break;
+                case "ntp": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "prop": concInput.value = "10 mg/mL (1000 mcg/mL)"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "mid": concInput.value = "1 mg/mL"; doseLabel.textContent = "Desired Dose (mg/hr)"; break;
+                case "fent": concInput.value = "50 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/hr)"; break;
+                case "dex": concInput.value = "4 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/hr)"; break;
+                case "ket": concInput.value = "10 mg/mL"; doseLabel.textContent = "Desired Dose (mg/kg/hr)"; break;
+                case "roc": concInput.value = "10 mg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+                case "cis": concInput.value = "2 mg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+            }
+        }
+
+        function calcMedDrip() {
+            const dose = parseFloat(document.getElementById('dose').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+
+            if (isNaN(dose) || isNaN(weight) || dose <= 0 || weight <= 0) {
+                alert("Please enter valid positive numbers for dose and weight.");
+                return;
+            }
+
+            let conc = 16;
+            let isWeightBased = true;
+            let unitText = "mcg/kg/min";
+
+            switch(currentMed) {
+                case "norepi": conc = 16; break;
+                case "epi": conc = 16; break;
+                case "dopa": conc = 1600; break;
+                case "dobu": conc = 2500; break;
+                case "vaso": conc = 0.2; isWeightBased = false; unitText = "units/min"; break;
+                case "mil": conc = 200; break;
+                case "ntg": conc = 200; isWeightBased = false; unitText = "mcg/min"; break;
+                case "ntp": conc = 200; break;
+                case "prop": conc = 1000; break;
+                case "mid": conc = 1; isWeightBased = false; unitText = "mg/hr"; break;
+                case "fent": conc = 50; isWeightBased = false; unitText = "mcg/hr"; break;
+                case "dex": conc = 4; unitText = "mcg/kg/hr"; break;
+                case "ket": conc = 10; isWeightBased = true; unitText = "mg/kg/hr"; break;
+                case "roc": conc = 10; break;
+                case "cis": conc = 2; break;
+            }
+
+            let rate = isWeightBased ? dose * weight : dose;
+            let mlPerHr = (rate * 60) / conc;
+            if (currentMed === "mid" || currentMed === "fent") mlPerHr = rate / conc;
+
+            mlPerHr = Math.round(mlPerHr * 10) / 10;
+
+            setTimeout(() => {
+                document.getElementById('rateDisplay').textContent = mlPerHr;
+                document.getElementById('rateLabel').innerHTML = `mL per hour<br><span class="text-lg">for ${dose} ${unitText} (${weight} kg)</span>`;
+                document.getElementById('medResult').classList.remove('hidden');
+            }, 10);
+        }
+
+                let currentVasoMed = "norepi";
+
+        function updateVasoMed() {
+            currentVasoMed = document.getElementById('vasoMed').value;
+        }
+
+        function toggleMAPInput() {
+            const changeType = document.getElementById('vasoChange').value;
+            document.getElementById('mapInputGroup').classList.toggle('hidden', changeType !== "targetMAP");
+        }
+
+                                        function calcVasoTitration() {
+            const med = currentVasoMed;
+            let currentRate = parseFloat(document.getElementById('vasoCurrentRate').value) || 0;
+            const weight = parseFloat(document.getElementById('vasoWeight').value) || 80;
+            const changeType = document.getElementById('vasoChange').value;
+            let targetMAP = parseFloat(document.getElementById('targetMAP').value) || 65;
+            let currentMAP = parseFloat(document.getElementById('currentMAP').value) || null;
+            const intensity = document.getElementById('titrationIntensity').value;
+
+            if (changeType === "targetMAP" && targetMAP < 65) {
+                if (!confirm(`Warning: Target MAP < 65 mmHg may increase risk of organ hypoperfusion.\n\nProceed anyway?`)) {
+                    return;
+                }
+            }
+
+            let conc = 16;
+            if (med === "dopa") conc = 1600;
+            else if (med === "dobu") conc = 2500;
+
+            let newRate = currentRate;
+            let explanation = "";
+
+            if (changeType === "targetMAP") {
+                let deltaMAP = 10;
+                if (currentMAP !== null) deltaMAP = targetMAP - currentMAP;
+
+                // Tiered constants based on safety
+                let factor = 0.015; // default moderate
+                if (intensity === "conservative") factor = 0.010;
+                else if (intensity === "aggressive") factor = 0.030;
+
+                const doseAdjustment = (deltaMAP / 5) * factor;
+                const currentDose = (currentRate * conc) / (60 * weight);
+                const newDose = Math.max(0, currentDose + doseAdjustment);
+
+                newRate = (newDose * weight * 60) / conc;
+                explanation = `${intensity.charAt(0).toUpperCase() + intensity.slice(1)} titration: From ${currentMAP || '?'} → ${targetMAP} mmHg`;
+            } else {
+                let delta = 0;
+                if (changeType === "increase005") delta = 0.05;
+                else if (changeType === "increase01") delta = 0.1;
+                else if (changeType === "decrease005") delta = -0.05;
+                else if (changeType === "decrease01") delta = -0.1;
+
+                const currentDose = (currentRate * conc) / (60 * weight);
+                const newDose = currentDose + delta;
+                newRate = (newDose * weight * 60) / conc;
+                explanation = `${delta > 0 ? 'Increased' : 'Decreased'} by ${Math.abs(delta)} mcg/kg/min`;
+            }
+
+            newRate = Math.max(0, Math.round(newRate * 10) / 10);
+
+            document.getElementById('vasoNewRate').textContent = newRate;
+            document.getElementById('vasoLabel').innerHTML = `mL/hr for ${med.toUpperCase()}`;
+            document.getElementById('vasoExplanation').innerHTML = explanation;
+            document.getElementById('vasoResult').classList.remove('hidden');
+        }              
+
+                    let currentSedMed = "prop";
+
+        function updateSedMed() {
+            currentSedMed = document.getElementById('sedMed').value;
+        }
+
+                      function calcSedationTitration() {
+            const med = currentSedMed;
+            let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
+            const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
+            const currentRASS = parseInt(document.getElementById('currentRASS').value);
+            const targetRASS = parseInt(document.getElementById('targetRASS').value);
+
+            // Standard ICU concentrations
+            let conc = 10;   // mg/mL for Propofol and Ketamine
+            if (med === "mid") conc = 1;
+            else if (med === "dex") conc = 4;
+            else if (med === "fent") conc = 50;
+            else if (med === "ket") conc = 10;
+
+            // RASS delta (positive = needs to be more awake → decrease sedation)
+            const rassDelta = targetRASS - currentRASS;
+
+            // Realistic mL/hr change per RASS point (drug-specific)
+            let mlPerRASSPoint = 8;
+            if (med === "prop") mlPerRASSPoint = 8;
+            else if (med === "mid") mlPerRASSPoint = 2;
+            else if (med === "dex") mlPerRASSPoint = 4;
+            else if (med === "fent") mlPerRASSPoint = 10;
+            else if (med === "ket") mlPerRASSPoint = 5;
+
+            let rateChange = rassDelta * mlPerRASSPoint * -1;   // negative sign flips direction correctly
+
+            // Safety limit on max change
+            if (Math.abs(rateChange) > 30) rateChange = Math.sign(rateChange) * 30;
+
+            let newRate = currentRate + rateChange;
+            if (newRate < 0) newRate = 0;
+
+            newRate = Math.round(newRate * 10) / 10;
+
+            // Clear explanation
+            let direction = rassDelta > 0 ? "— Decrease sedation (patient needs to be more awake)" 
+                         : rassDelta < 0 ? "— Increase sedation (patient too awake)" 
+                         : "— At target RASS";
+            
+            let explanation = `Current RASS ${currentRASS} → Target ${targetRASS} (Δ ${rassDelta}) ${direction}`;
+
+            document.getElementById('sedNewRate').textContent = newRate;
+            document.getElementById('sedLabel').innerHTML = `mL/hr for ${med.toUpperCase()}`;
+            document.getElementById('sedExplanation').innerHTML = explanation;
+            document.getElementById('sedResult').classList.remove('hidden');
+        }      
+
+                function populateUnits() {
+            const units = {
+                // Weight / Mass
+                "kg": "Kilograms (kg)",
+                "g": "Grams (g)",
+                "mg": "Milligrams (mg)",
+                "mcg": "Micrograms (mcg)",
+                "lb": "Pounds (lb)",
+                "oz": "Ounces (oz)",
+
+                // Volume / Fluid
+                "L": "Liters (L)",
+                "mL": "Milliliters (mL)",
+                "cc": "Cubic Centimeters (cc)",
+                "fl_oz": "Fluid Ounces (fl oz)",
+
+                // Length
+                "cm": "Centimeters (cm)",
+                "m": "Meters (m)",
+                "inch": "Inches (in)",
+                "ft": "Feet (ft)",
+
+                // Pressure
+                "mmHg": "mmHg (Blood Pressure)",
+                "kPa": "kPa (Blood Pressure)",
+                "cmH2O": "cmH₂O (Ventilator Pressure)",
+
+                // Temperature
+                "C": "Celsius (°C)",
+                "F": "Fahrenheit (°F)"
+            };
+
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+
+            fromSelect.innerHTML = '<option value="">Select unit</option>';
+            toSelect.innerHTML = '<option value="">Select unit</option>';
+
+            Object.keys(units).forEach(key => {
+                const opt1 = document.createElement('option');
+                opt1.value = key;
+                opt1.textContent = units[key];
+                fromSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = key;
+                opt2.textContent = units[key];
+                toSelect.appendChild(opt2);
+            });
+        }
+
+            function convertUnits() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+
+            if (!fromValue || !fromUnit || !toUnit) {
+                alert("Please enter a value and select both units");
+                return;
+            }
+
+            let result = fromValue;
+
+            const conversionMap = {
+                // Weight
+                "kg": { "g": 1000, "mg": 1e6, "mcg": 1e9, "lb": 2.20462, "oz": 35.274 },
+                "g": { "kg": 0.001, "mg": 1000, "mcg": 1e6, "lb": 0.00220462, "oz": 0.035274 },
+                "mg": { "kg": 1e-6, "g": 0.001, "mcg": 1000, "lb": 2.20462e-6, "oz": 3.5274e-5 },
+                "mcg": { "kg": 1e-9, "g": 1e-6, "mg": 0.001, "lb": 2.20462e-9, "oz": 3.5274e-8 },
+                "lb": { "kg": 0.453592, "g": 453.592, "mg": 453592, "mcg": 4.53592e8, "oz": 16 },
+                "oz": { "kg": 0.0283495, "g": 28.3495, "mg": 28349.5, "mcg": 2.83495e7, "lb": 0.0625 },
+
+                // Volume
+                "L": { "mL": 1000, "cc": 1000, "fl_oz": 33.814 },
+                "mL": { "L": 0.001, "cc": 1, "fl_oz": 0.033814 },
+                "cc": { "L": 0.001, "mL": 1, "fl_oz": 0.033814 },
+                "fl_oz": { "L": 0.0295735, "mL": 29.5735, "cc": 29.5735 },
+
+                // Length
+                "cm": { "m": 0.01, "inch": 0.393701, "ft": 0.0328084 },
+                "m": { "cm": 100, "inch": 39.3701, "ft": 3.28084 },
+                "inch": { "cm": 2.54, "m": 0.0254, "ft": 0.083333 },
+                "ft": { "cm": 30.48, "m": 0.3048, "inch": 12 },
+
+                // Pressure
+                "mmHg": { "kPa": (v) => v * 0.133322, "cmH2O": (v) => v * 1.35951 },
+                "kPa": { "mmHg": (v) => v * 7.50062, "cmH2O": (v) => v * 10.1972 },
+                "cmH2O": { "mmHg": (v) => v * 0.735559, "kPa": (v) => v * 0.0980665 },
+
+                // Temperature
+                "C": { "F": (c) => (c * 9/5) + 32 },
+                "F": { "C": (f) => (f - 32) * 5/9 }
+            };
+
+            if (fromUnit === toUnit) {
+                result = fromValue;
+            } else if (conversionMap[fromUnit] && conversionMap[fromUnit][toUnit] !== undefined) {
+                const conv = conversionMap[fromUnit][toUnit];
+                result = typeof conv === 'function' ? conv(fromValue) : fromValue * conv;
+            } else {
+                alert("Conversion between these units is not supported yet.");
+                return;
+            }
+
+            document.getElementById('toValue').value = Number(result).toFixed(2);
+            document.getElementById('resultValue').textContent = Number(result).toFixed(2) + " " + toUnit;
+            document.getElementById('convertResult').classList.remove('hidden');
+        }
+
+        function clearConverter() {
+            document.getElementById('fromValue').value = '';
+            document.getElementById('toValue').value = '';
+            document.getElementById('convertResult').classList.add('hidden');
+        }    
+
+        function reverseConversion() {
+            const fromValue = document.getElementById('fromValue').value;
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toValue = document.getElementById('toValue').value;
+            const toUnit = document.getElementById('toUnit').value;
+
+            if (!toValue || !toUnit) {
+                alert("Convert first before reversing");
+                return;
+            }
+
+            // Swap values and units
+            document.getElementById('fromValue').value = toValue;
+            document.getElementById('fromUnit').value = toUnit;
+            document.getElementById('toValue').value = fromValue;
+            document.getElementById('toUnit').value = fromUnit;
+
+            // Run conversion in reverse
+            convertUnits();
+        }
+
+        
+
+    
+
+        function interpretABG() {
+            const ph = parseFloat(document.getElementById('ph').value);
+            const pco2 = parseFloat(document.getElementById('pco2').value);
+            const hco3 = parseFloat(document.getElementById('hco3').value);
+            const po2 = parseFloat(document.getElementById('po2').value);
+
+            if (isNaN(ph) || isNaN(pco2) || isNaN(hco3)) {
+                alert("Please enter pH, PaCO₂, and HCO₃ values.");
+                return;
+            }
+
+            let valuesHTML = `pH: ${ph} | PaCO₂: ${pco2} mmHg | HCO₃: ${hco3} mEq/L | PaO₂: ${isNaN(po2) ? '—' : po2} mmHg`;
+            let mainDiagnosis = ph < 7.35 ? "Acidosis" : ph > 7.45 ? "Alkalosis" : "Normal pH";
+            let primary = "";
+            let compensation = "Acute / Uncompensated";
+            let ox = po2 < 60 ? "Severe Hypoxemia" : po2 < 80 ? "Hypoxemia" : "Adequate Oxygenation";
+
+            if (ph < 7.35) {
+                if (pco2 > 45) primary = "Primary Respiratory Acidosis";
+                else if (hco3 < 22) primary = "Primary Metabolic Acidosis";
+            } else if (ph > 7.45) {
+                if (pco2 < 35) primary = "Primary Respiratory Alkalosis";
+                else if (hco3 > 26) primary = "Primary Metabolic Alkalosis";
+            } else {
+                primary = "Normal or Fully Compensated";
+            }
+
+            document.getElementById('abgValues').innerHTML = valuesHTML;
+            document.getElementById('abgMain').innerHTML = mainDiagnosis;
+            document.getElementById('abgDetails').innerHTML = `
+                <strong>Primary Process:</strong> ${primary}<br>
+                <strong>Compensation:</strong> ${compensation}<br>
+                <strong>Oxygenation:</strong> ${ox}
+            `;
+            document.getElementById('abgResult').classList.remove('hidden');
+        }
+
+        function updateGCS(category, score) {
+            gcsScores[category] = score;
+            const container = document.getElementById(category + 'Buttons');
+            container.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            container.querySelectorAll('button').forEach(btn => {
+                const btnScore = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+                if (btnScore === score) btn.classList.add('selected');
+            });
+
+            const total = gcsScores.eye + gcsScores.verbal + gcsScores.motor;
+            document.getElementById('gcsTotal').textContent = total;
+            let cat = total >= 13 ? "Mild (13-15)" : total >= 9 ? "Moderate (9-12)" : "Severe (≤8)";
+            document.getElementById('gcsCategory').textContent = cat;
+        }
+
+        function resetGCS() {
+            gcsScores = { eye: 4, verbal: 5, motor: 6 };
+            document.querySelectorAll('.gcs-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('gcsTotal').textContent = "15";
+            document.getElementById('gcsCategory').textContent = "Mild (13-15)";
+        }
+                function setupRASS() {
+            const scores = [
+                {score: 4,  term: "Combative",          desc: "Overly combative, violent, immediate danger to staff"},
+                {score: 3,  term: "Very agitated",     desc: "Pulls or removes tube(s) or catheter(s), aggressive"},
+                {score: 2,  term: "Agitated",          desc: "Frequent nonpurposeful movement, fights ventilator"},
+                {score: 1,  term: "Restless",          desc: "Anxious but movements not aggressively vigorous"},
+                {score: 0,  term: "Alert and calm",    desc: ""},
+                {score: -1, term: "Drowsy",            desc: "Not fully alert but has sustained awakening (eye opening/eye contact) to voice (≥ 10 seconds)"},
+                {score: -2, term: "Light sedation",    desc: "Briefly awakens to voice with eye contact (<10 seconds)"},
+                {score: -3, term: "Moderate sedation", desc: "Movement or eye opening to voice (but no eye contact)"},
+                {score: -4, term: "Deep sedation",     desc: "No response to voice but movement or eye opening to physical stimulation"},
+                {score: -5, term: "Unarousable",       desc: "No response to voice or physical stimulation"}
+            ];
+            let html = '';
+            scores.forEach(s => {
+                html += `<button onclick="setRASS(${s.score})" class="rass-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-left p-4 rounded-3xl flex flex-col items-center justify-center transition-all active:scale-95">
+                    <div class="text-4xl font-bold mb-1">${s.score}</div>
+                    <div class="text-sm font-medium">${s.term}</div>
+                </button>`;
+            });
+            document.getElementById('rassButtons').innerHTML = html;
+        }
+
+        function setRASS(score) {
+            // Highlight selected button
+            document.querySelectorAll('#rassButtons button').forEach(btn => btn.classList.remove('bg-teal-700', 'text-white'));
+            const btn = Array.from(document.querySelectorAll('#rassButtons button')).find(b => b.textContent.includes(score));
+            if (btn) btn.classList.add('bg-teal-700', 'text-white');
+
+            // Update large score and full clinical description
+            document.getElementById('rassScore').textContent = score;
+            const fullDescs = {
+                4:  "Overly combative, violent, immediate danger to staff",
+                3:  "Pulls or removes tube(s) or catheter(s), aggressive",
+                2:  "Frequent nonpurposeful movement, fights ventilator",
+                1:  "Anxious but movements not aggressively vigorous",
+                0:  "Alert and calm",
+                "-1":"Not fully alert but has sustained awakening (eye opening/eye contact) to voice (≥ 10 seconds)",
+                "-2":"Briefly awakens to voice with eye contact (<10 seconds)",
+                "-3":"Movement or eye opening to voice (but no eye contact)",
+                "-4":"No response to voice but movement or eye opening to physical stimulation",
+                "-5":"No response to voice or physical stimulation"
+            };
+            document.getElementById('rassDescription').textContent = fullDescs[score] || "";
+        }
+
+        window.addEventListener('load', () => {
+            console.log("MedVibe fully loaded with combined Emergency section");
+            setupRASS();
+            updateMed();
+            updateSedMed();
+            updateVasoMed();
+            setDripMode('drops');
+            populateUnits();
+            checkIfUnlocked();
+            
+            
+        });
+    </script>
+                    </div>   <!-- closes the p-4 pt-6 content area -->
+        </div>       <!-- closes the max-w-md container -->
+</body>
+</html>
