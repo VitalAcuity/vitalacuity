@@ -143,25 +143,58 @@
     </div>
   </section>
 
-  <!-- For Clinicians - Evidence Summary -->
-  <section id="clinicians" class="py-20 bg-zinc-900">
-    <div class="max-w-5xl mx-auto px-6 text-center">
-      <h2 class="text-4xl font-bold mb-4">Evidence-Based Tools</h2>
-      <p class="text-zinc-400 max-w-2xl mx-auto mb-12">
-        All calculations follow current best practices from PADIS guidelines, Surviving Sepsis Campaign, and ARDSNet protocols.
+  <!-- ====================== CLINICAL EVIDENCE SUMMARIES ====================== -->
+<section class="py-16 bg-zinc-950">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-semibold text-white mb-3">Clinical Evidence Summaries</h2>
+      <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
+        Peer-reviewed guideline support for VitalAcuity’s titration tools. Designed for physicians and clinical leadership.
       </p>
-
-      <a href="evidence-summary.pdf" 
-         download="VitalAcuity_Evidence_Summary.pdf"
-         class="inline-flex items-center gap-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 px-10 py-6 rounded-3xl transition text-left mx-auto">
-        <span class="text-4xl">📄</span>
-        <div>
-          <div class="font-semibold text-lg">Download Evidence Summary (PDF)</div>
-          <div class="text-sm text-zinc-400">Supporting references for titration, ABG, and airway management</div>
-        </div>
-      </a>
     </div>
-  </section>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- General Evidence Summary -->
+      <div class="bg-zinc-900 rounded-3xl p-6 hover:bg-zinc-800 transition-all border border-zinc-800">
+        <div class="h-1.5 bg-emerald-500 rounded-t-3xl -mx-6 -mt-6 mb-6"></div>
+        <h3 class="text-xl font-semibold text-white mb-2">Vasopressor & Sedation Overview</h3>
+        <p class="text-zinc-400 text-[15px] leading-tight mb-8">
+          Comprehensive summary covering both vasopressor and sedation management guidelines.
+        </p>
+        <a href="evidence-summary.pdf" 
+           class="block w-full text-center bg-white text-zinc-900 py-3.5 rounded-2xl font-medium hover:bg-zinc-100 transition-colors">
+          Download PDF
+        </a>
+      </div>
+
+      <!-- Sedation Evidence Summary -->
+      <div class="bg-zinc-900 rounded-3xl p-6 hover:bg-zinc-800 transition-all border border-zinc-800">
+        <div class="h-1.5 bg-teal-500 rounded-t-3xl -mx-6 -mt-6 mb-6"></div>
+        <h3 class="text-xl font-semibold text-white mb-2">Sedation Titration Helper</h3>
+        <p class="text-zinc-400 text-[15px] leading-tight mb-8">
+          RASS-guided light sedation protocols and safety analysis for propofol, dexmedetomidine, midazolam, fentanyl, and ketamine.
+        </p>
+        <a href="sedation-evidence-summary.pdf" 
+           class="block w-full text-center bg-white text-zinc-900 py-3.5 rounded-2xl font-medium hover:bg-zinc-100 transition-colors">
+          Download PDF
+        </a>
+      </div>
+
+      <!-- Vasopressor Evidence Summary -->
+      <div class="bg-zinc-900 rounded-3xl p-6 hover:bg-zinc-800 transition-all border border-zinc-800">
+        <div class="h-1.5 bg-amber-500 rounded-t-3xl -mx-6 -mt-6 mb-6"></div>
+        <h3 class="text-xl font-semibold text-white mb-2">Vasopressor Titration Helper</h3>
+        <p class="text-zinc-400 text-[15px] leading-tight mb-8">
+          MAP-goal directed titration protocols and safety analysis for norepinephrine, epinephrine, dopamine, dobutamine, and vasopressin.
+        </p>
+        <a href="vaso-evidence-summary.pdf" 
+           class="block w-full text-center bg-white text-zinc-900 py-3.5 rounded-2xl font-medium hover:bg-zinc-100 transition-colors">
+          Download PDF
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
   <!-- Footer -->
   <footer class="bg-black py-12 border-t border-zinc-800">
