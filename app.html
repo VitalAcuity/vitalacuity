@@ -999,7 +999,7 @@
         let gcsScores = { eye: 4, verbal: 5, motor: 6 };
         let currentMed = "norepi";
         let dripMode = "drops";
-/*
+
                 // Strong device-bound unlock system
         function getDeviceFingerprint() {
             const canvas = document.createElement("canvas");
@@ -1080,7 +1080,7 @@
             document.getElementById('unlockScreen').classList.add('hidden');
             document.getElementById('paywall').classList.remove('hidden');
         }
-       */ 
+       
 
         function back() {
             // IV Tools group
@@ -1751,14 +1751,14 @@ function clearConverter() {
 
             setupRASS();
             updateMed();
-            updateSedMed();        // This one exists
-            updateVasoMed();       // This one exists
+            updateSedMed();       
+            updateVasoMed();       
             setDripMode('drops');
-            populateUnits();       // This will now run successfully
+            populateUnits();      
 
-            // Temporarily disabled for testing
-            // checkIfUnlocked();
-            navigate('home');      // Force start on home screen
+           
+            checkIfUnlocked();
+            navigate('home');     
         });
     </script>
                     </div>   <!-- closes the p-4 pt-6 content area -->
