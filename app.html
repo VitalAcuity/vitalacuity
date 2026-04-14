@@ -1367,7 +1367,7 @@
             document.getElementById('mapInputGroup').classList.toggle('hidden', changeType !== "targetMAP");
         }
 
-        function calcVasoTitration() {
+               function calcVasoTitration() {
             const med = document.getElementById('vasoMed').value;
             let currentRate = parseFloat(document.getElementById('currentRate').value) || 0;
             const weight = parseFloat(document.getElementById('patientWeight').value) || 80;
@@ -1377,12 +1377,11 @@
 
             // Standard concentrations (mcg/mL)
             const concMap = {
-                "norepi": 16,   // 4 mg in 250 mL = 16 mcg/mL
+                "norepi": 16,
                 "epi": 16,
-                "dopa": 1600,   // 400 mg in 250 mL = 1600 mcg/mL
+                "dopa": 1600,
                 "dobu": 1000
             };
-
             const conc = concMap[med] || 16;
 
             let newRate = currentRate;
@@ -1390,22 +1389,22 @@
 
             if (changeType === "targetMAP") {
                 const intensity = document.getElementById('titrationIntensity').value;
-                let factor = 0.02; // moderate default
 
-                if (intensity === "conservative") factor = 0.01;
-                else if (intensity === "aggressive") factor = 0.04;
+                // Safer, more conservative factors
+                let factor = 0.015;   // moderate default
+                if (intensity === "conservative") factor = 0.008;
+                if (intensity === "aggressive") factor = 0.025;
 
                 const deltaMAP = targetMAP - currentMAP;
-                const doseChange = (deltaMAP / 5) * factor;   // 5 mmHg per 0.02 mcg/kg/min approx
+                const doseChangePer5mmHg = factor;   // mcg/kg/min per 5 mmHg
 
-                // Convert current rate to mcg/kg/min
-                const currentDose = (currentRate * conc) / (weight * 60);
-                let newDose = Math.max(0, currentDose + doseChange);
+                const currentDose = (currentRate * conc) / (weight * 60);   // current mcg/kg/min
+                let newDose = Math.max(0.01, currentDose + (deltaMAP / 5) * doseChangePer5mmHg);
 
                 newRate = (newDose * weight * 60) / conc;
                 newRate = Math.round(newRate * 10) / 10;
 
-                explanation = `Target MAP ${targetMAP} mmHg • ${intensity} adjustment`;
+                explanation = `${intensity} adjustment toward MAP ${targetMAP} mmHg`;
             } 
             else {
                 // Simple step change
@@ -1416,7 +1415,7 @@
                 else if (changeType === "decrease01") step = -0.1;
 
                 const currentDose = (currentRate * conc) / (weight * 60);
-                let newDose = Math.max(0, currentDose + step);
+                let newDose = Math.max(0.01, currentDose + step);
 
                 newRate = (newDose * weight * 60) / conc;
                 newRate = Math.round(newRate * 10) / 10;
@@ -1424,12 +1423,12 @@
                 explanation = `${step > 0 ? 'Increase' : 'Decrease'} by ${Math.abs(step)} mcg/kg/min`;
             }
 
-            // Display result
+            // Update UI
             document.getElementById('vasoNewRate').textContent = newRate;
             document.getElementById('vasoLabel').innerHTML = `mL/hr of ${med === 'norepi' ? 'Norepinephrine' : med === 'epi' ? 'Epinephrine' : med === 'dopa' ? 'Dopamine' : 'Dobutamine'}`;
             document.getElementById('vasoExplanation').textContent = explanation;
             document.getElementById('vasoResult').classList.remove('hidden');
-        }
+        } 
 
         function calcSedationTitration() {
             const med = currentSedMed;
