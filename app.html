@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedVibe</title>
+    <title>VitalAcuity</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PWA Manifest and Meta Tags -->
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#10B981">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
         
@@ -54,6 +60,13 @@
     </style>
 </head>
 <body class="bg-zinc-950 text-white min-h-screen pb-12">
+    <!-- UNLICENSED COPY WARNING BANNER -->
+<div id="unlicensedBanner" class="hidden fixed bottom-0 left-0 right-0 bg-orange-600 text-white text-center py-3 text-sm font-medium z-[9999] flex items-center justify-center gap-2 shadow-2xl">
+    <span class="text-orange-200">⚠️</span>
+    <span>This is an unlicensed copy of VitalAcuity</span>
+    <span class="text-orange-200">•</span>
+    <a href="https://vitalacuity.app" target="_blank" class="underline hover:no-underline">Purchase a license</a>
+</div>
     <!-- MOBILE CONTAINER -->
     <div class="max-w-md mx-auto bg-zinc-950 min-h-screen">
 
@@ -1016,29 +1029,59 @@
             ).slice(0, 40);
         }
 
-        function checkIfUnlocked() {
-            const savedHash = localStorage.getItem('va_unlock_hash');
-            const savedExpiry = localStorage.getItem('va_expiry');
-            if (!savedHash || !savedExpiry) {
-                navigate('paywall');
-                return;
+        function showUnlicensedBanner() {
+            const banner = document.getElementById('unlicensedBanner');
+            if (banner) {
+            banner.classList.remove('hidden');
             }
-            if (Date.now() > parseInt(savedExpiry)) {
-                alert("Your license has expired. Please renew.");
-                localStorage.removeItem('va_unlock_hash');
-                localStorage.removeItem('va_expiry');
-                navigate('paywall');
-                return;
-            }
-            const currentFingerprint = getDeviceFingerprint();
-            const expectedHash = btoa(savedHash + currentFingerprint).slice(0, 32);
-            if (localStorage.getItem('va_current_hash') !== expectedHash) {
-                alert("This license key is not valid on this device.");
-                navigate('paywall');
-                return;
-            }
-            navigate('home');
         }
+
+        function enforceLicenseCheck() {
+    const hasValidLicense = localStorage.getItem('va_unlock_hash') && 
+                            localStorage.getItem('va_expiry') && 
+                            Date.now() < parseInt(localStorage.getItem('va_expiry'));
+
+    if (!hasValidLicense) {
+        showUnlicensedBanner();
+    } else {
+        // Hide banner if license becomes valid
+        const banner = document.getElementById('unlicensedBanner');
+        if (banner) banner.classList.add('hidden');
+    }
+}
+
+        function checkIfUnlocked() {
+    const savedHash = localStorage.getItem('va_unlock_hash');
+    const savedExpiry = localStorage.getItem('va_expiry');
+
+    if (!savedHash || !savedExpiry) {
+        navigate('paywall');
+        return;
+    }
+
+    if (Date.now() > parseInt(savedExpiry)) {
+        alert("Your license has expired. Please renew.");
+        localStorage.removeItem('va_unlock_hash');
+        localStorage.removeItem('va_expiry');
+        navigate('paywall');
+        return;
+    }
+
+    const currentFingerprint = getDeviceFingerprint();
+    const expectedHash = btoa(savedHash + currentFingerprint).slice(0, 32);
+
+    if (localStorage.getItem('va_current_hash') !== expectedHash) {
+        alert("This license key is not valid on this device.");
+        navigate('paywall');
+        return;
+    }
+
+    // License is valid — hide banner in case it was shown
+    const banner = document.getElementById('unlicensedBanner');
+    if (banner) banner.classList.add('hidden');
+
+    navigate('home');
+}
 
         function unlockApp() {
             const key = document.getElementById('licenseKey').value.trim();
@@ -1098,15 +1141,19 @@
         }
 
         function navigate(screen) {
-            // Hide EVERY possible screen to prevent ghosting
-            document.querySelectorAll('#home, #iv, #intubation, #rsi, #ett, #ibw, #abg, #gcs, #rass, #units, #drip, #emergency, #convert, #vaso, #sedation').forEach(d => {
-                if (d) d.classList.add('hidden');
-            });
-            const target = document.getElementById(screen);
-            if (target) {
-                target.classList.remove('hidden');
-            }
-        }
+    // Enforce license check on EVERY navigation (this is the strong one)
+    enforceLicenseCheck();
+
+    // Hide EVERY possible screen to prevent ghosting
+    document.querySelectorAll('#home, #iv, #intubation, #rsi, #ett, #ibw, #abg, #gcs, #rass, #units, #drip, #emergency, #convert, #vaso, #sedation').forEach(d => {
+        if (d) d.classList.add('hidden');
+    });
+
+    const target = document.getElementById(screen);
+    if (target) {
+        target.classList.remove('hidden');
+    } 
+}
 
         function showEmergencySub(sub) {
             document.querySelectorAll('.emergency-sub').forEach(el => el.classList.add('hidden'));
@@ -1735,7 +1782,7 @@ function clearConverter() {
             document.getElementById('rassDescription').textContent = fullDescs[score] || "";
         }
 
-        window.addEventListener('load', () => {
+                window.addEventListener('load', () => {
             console.log("VitalAcuity fully loaded");
 
             setupRASS();
@@ -1745,11 +1792,25 @@ function clearConverter() {
             setDripMode('drops');
             populateUnits();
 
-            checkIfUnlocked();        // ← Paywall now active again
-        });
+            // Strong license enforcement on every load
+            checkIfUnlocked();
+            enforceLicenseCheck();
+        });  
     
     </script>
                     </div>   <!-- closes the p-4 pt-6 content area -->
         </div>       <!-- closes the max-w-md container -->
-</body>
+
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker registered', reg))
+        .catch((err) => console.log('Service Worker registration failed', err));
+    });
+  }
+</script>
+
+    </body>
 </html>
