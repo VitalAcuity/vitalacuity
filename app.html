@@ -68,6 +68,22 @@
     <span class="text-orange-200">•</span>
     <a href="https://vitalacuity.app" target="_blank" class="underline hover:no-underline">Purchase a license</a>
 </div>
+
+<!-- NEW VERSION AVAILABLE TOAST -->
+<div id="updateToast" class="hidden fixed bottom-4 left-4 right-4 bg-zinc-800 border border-teal-400 text-white rounded-3xl shadow-2xl z-[10000] flex items-center justify-between px-5 py-4">
+  <div class="flex items-center gap-3">
+    <span class="text-teal-400 text-xl">↻</span>
+    <div>
+      <p class="font-medium">New version available</p>
+      <p class="text-zinc-400 text-sm">Reload to get the latest updates</p>
+    </div>
+  </div>
+  <button onclick="updateApp()" 
+          class="bg-teal-500 hover:bg-teal-600 px-6 py-2 rounded-2xl font-medium text-sm transition-colors">
+    Reload
+  </button>
+</div>
+
     <!-- MOBILE CONTAINER -->
     <div class="max-w-md mx-auto bg-zinc-950 min-h-screen">
 
@@ -1790,6 +1806,31 @@ function clearConverter() {
             };
             document.getElementById('rassDescription').textContent = fullDescs[score] || "";
         }
+
+        // Service Worker Update Toast
+function showUpdateToast() {
+  const toast = document.getElementById('updateToast');
+  if (toast) toast.classList.remove('hidden');
+}
+
+function updateApp() {
+  window.location.reload();
+}
+
+// Register service worker and listen for updates
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateToast();
+          }
+        });
+      });
+    });
+}
 
                 window.addEventListener('load', () => {
             console.log("VitalAcuity fully loaded");

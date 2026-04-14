@@ -1,6 +1,5 @@
-const CACHE_NAME = 'vitalacuity-v2';
+const CACHE_NAME = 'vitalacuity-v3';   // Increase this version number when you make major changes
 
-// Cache all important files
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -12,11 +11,29 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Serve cached files when offline
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((name) => {
+          if (name !== CACHE_NAME) return caches.delete(name);
+        })
+      );
+    })
+  );
+});
+
+// Notify the page when a new version is ready
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // If offline and trying to load the app, show license expired page
+      // Offline License Expired fallback
       if (!response && event.request.url.includes('app.html')) {
         return new Response(`
           <html>
@@ -32,16 +49,13 @@ self.addEventListener('fetch', (event) => {
                 <h1 class="text-3xl font-semibold mb-4">License Expired</h1>
                 <p class="text-zinc-400 mb-8">Your VitalAcuity subscription has expired.</p>
                 <p class="text-zinc-400 mb-10">Please renew your subscription to continue using the app.</p>
-                <a href="https://vitalacuity.app" 
-                   class="block bg-teal-600 hover:bg-teal-500 py-4 rounded-3xl text-white font-medium text-lg">
+                <a href="https://vitalacuity.app" class="block bg-teal-600 hover:bg-teal-500 py-4 rounded-3xl text-white font-medium text-lg">
                   Renew Subscription
                 </a>
               </div>
             </body>
           </html>
-        `, {
-          headers: { 'Content-Type': 'text/html' }
-        });
+        `, { headers: { 'Content-Type': 'text/html' } });
       }
       return response || fetch(event.request);
     })
