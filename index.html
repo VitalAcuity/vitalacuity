@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VitalAcuity • Bedside Tools for RRTs & ICU Nurses</title>
+  <title>VitalAcuity • Bedside Tools for ER and ICU Clinicians</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; }
@@ -35,28 +35,32 @@
     </div>
   </header>
 
-  <!-- Hero - Reduced Height -->
-  <section class="hero-bg py-16 md:py-20 text-center">
-    <div class="max-w-4xl mx-auto px-6">
-      <h1 class="text-5xl md:text-6xl font-bold tracking-tighter leading-none mb-6">
-        Tools that actually help<br>when it matters most
-      </h1>
-      <p class="text-xl md:text-2xl text-teal-100 max-w-2xl mx-auto">
-        Fast, precise calculators designed by and for RRTs and ICU nurses.
-      </p>
-      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="app.html"
-           class="bg-white text-zinc-900 px-10 py-4 rounded-3xl font-semibold text-lg hover:bg-zinc-100 transition">
-          Open the App
-        </a>
-        <a href="#pricing" 
-           class="border border-white/70 hover:bg-white/10 px-10 py-4 rounded-3xl font-medium text-lg transition">
-          View Pricing
-        </a>
-      </div>
-      <p class="text-zinc-400 text-sm mt-8">Full access requires subscription • No free trial</p>
+  <!-- ====================== TIGHT HERO - CLEAR ICU MONITORS BACKGROUND ====================== -->
+<section class="relative py-8 bg-cover bg-center bg-no-repeat overflow-hidden min-h-[420px] flex items-center" 
+         style="background-image: linear-gradient(rgba(15, 118, 110, 0.82), rgba(15, 118, 110, 0.82)), url('https://images.pexels.com/photos/6129237/pexels-photo-6129237.jpeg')">
+
+  <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+    <h1 class="text-5xl md:text-6xl font-semibold text-white leading-none tracking-tighter mb-5">
+      The tools you want<br>when it matters most
+    </h1>
+    <p class="text-xl md:text-2xl text-teal-100 max-w-2xl mx-auto mb-8">
+      Fast, precise, helpful bedside tools designed by and for ER and ICU clinicians.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="#" 
+         class="inline-flex items-center px-8 py-4 bg-white text-zinc-900 font-medium rounded-3xl hover:bg-zinc-100 transition-colors">
+        Open the App
+      </a>
+      <a href="#" 
+         class="inline-flex items-center px-8 py-4 border border-white text-white font-medium rounded-3xl hover:bg-white hover:text-zinc-900 transition-colors">
+        View Pricing
+      </a>
     </div>
-  </section>
+    
+    <p class="text-xs text-teal-100 mt-8">Full access requires subscription • No free trial</p>
+  </div>
+</section>
 
   <!-- App Screenshots -->
   <section id="screenshots" class="py-20 bg-black">
@@ -144,7 +148,7 @@
   </section>
 
   <!-- ====================== CLINICAL EVIDENCE SUMMARIES ====================== -->
-<section class="py-16 bg-zinc-950">
+<section id="clinicians" class="py-16 bg-zinc-950">
   <div class="max-w-6xl mx-auto px-6">
     <div class="text-center mb-12">
       <h2 class="text-4xl font-semibold text-white mb-3">Clinical Evidence Summaries</h2>
