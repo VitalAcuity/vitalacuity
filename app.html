@@ -242,16 +242,21 @@
                     <option value="dobu">Dobutamine</option>
                 </select>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm text-zinc-400 mb-2">Current rate (mL/hr)</label>
-                        <input id="vasoCurrentRate" type="number" value="10" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-zinc-400 mb-2">Patient weight (kg)</label>
-                        <input id="vasoWeight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center">
-                    </div>
+                            <div class="grid grid-cols-2 gap-4">
+                <!-- Current Rate -->
+                <div>
+                    <label class="text-zinc-400 text-sm block mb-2">Current rate (mL/hr)</label>
+                    <input id="currentRate" type="number" 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
                 </div>
+
+                <!-- Patient Weight -->
+                <div>
+                    <label class="text-zinc-400 text-sm block mb-2">Patient weight (kg)</label>
+                    <input id="patientWeight" type="number" 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                </div>
+            </div>
 
                 <select id="vasoChange" onchange="toggleMAPInput()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
                     <option value="increase005">Increase by 0.05 mcg/kg/min</option>
