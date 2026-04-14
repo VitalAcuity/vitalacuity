@@ -1469,7 +1469,7 @@ function updateSedMed() {
             document.getElementById('vasoResult').classList.remove('hidden');
         } 
 
- function calcSedationTitration() {
+    function calcSedationTitration() {
     const med = currentSedMed;
     let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
     const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
@@ -1477,49 +1477,39 @@ function updateSedMed() {
     const targetRASS = parseInt(document.getElementById('targetRASS').value);
 
     if (isNaN(currentRate) || isNaN(weight) || weight <= 0) {
-        alert("Please enter valid current rate and patient weight.");
+        alert("Please enter valid current rate and patient weight (kg).");
         return;
     }
 
-    // Standard concentrations (mg/mL unless noted)
-    let conc = 10; 
-    if (med === "mid") conc = 1;
-    else if (med === "dex") conc = 4;   // mcg/mL but we normalize for calculation
-    else if (med === "fent") conc = 50;
-    else if (med === "ket") conc = 10;
-
-    // RASS delta: positive = too awake → need more sedation (increase rate)
+    // RASS delta: positive = too awake → increase rate
     const rassDelta = targetRASS - currentRASS;
 
-    // Conservative mL/hr per RASS point change
+    // Conservative base step size (mL/hr per RASS point)
     let mlPerRASSPoint = 5;
-    if (med === "prop") mlPerRASSPoint = 5;      // Propofol: gentle steps
-    else if (med === "mid") mlPerRASSPoint = 2;  // Midazolam: very conservative
-    else if (med === "dex") mlPerRASSPoint = 3;  // Dexmedetomidine: slow due to hemodynamics
-    else if (med === "fent") mlPerRASSPoint = 6; // Fentanyl: moderate
-    else if (med === "ket") mlPerRASSPoint = 4;  // Ketamine: balanced
+    if (med === "prop") mlPerRASSPoint = 5;
+    else if (med === "mid") mlPerRASSPoint = 2;
+    else if (med === "dex") mlPerRASSPoint = 3;
+    else if (med === "fent") mlPerRASSPoint = 6;
+    else if (med === "ket") mlPerRASSPoint = 4;
 
-    // Calculate raw rate change
+    // Calculate change
     let rateChange = rassDelta * mlPerRASSPoint * -1;
 
-    // Conservative safety cap: max 15 mL/hr change at once
+    // Hard conservative cap: max 15 mL/hr change at once
     if (Math.abs(rateChange) > 15) {
         rateChange = Math.sign(rateChange) * 15;
     }
 
-    // Apply weight-based adjustment where clinically relevant
     let newRate = currentRate + rateChange;
-    
-    // Extra safety for weight-based drugs (Dex and Ketamine)
+    if (newRate < 0) newRate = 0;
+    newRate = Math.round(newRate * 10) / 10;
+
+    // Weight-based adjustment for Dex and Ketamine (gentle scaling)
     if (med === "dex" || med === "ket") {
-        // Convert to per-kg thinking and back to prevent unsafe jumps
-        const currentMcgKgHr = (currentRate * conc * 1000) / weight; // rough normalization
-        let newMcgKgHr = currentMcgKgHr + (rassDelta * (med === "dex" ? 0.2 : 0.3)); // small per-kg steps
-        newRate = (newMcgKgHr * weight) / (conc * 1000) * 1000; // back to mL/hr
-        newRate = Math.max(0, Math.round(newRate * 10) / 10);
-    } else {
-        if (newRate < 0) newRate = 0;
-        newRate = Math.round(newRate * 10) / 10;
+        // Scale the entire new rate by weight ratio (relative to 80kg baseline)
+        const weightFactor = weight / 80;
+        newRate = Math.round(newRate * weightFactor * 10) / 10;
+        if (newRate < 0.5) newRate = 0.5; // minimum safe rate
     }
 
     // Explanation
@@ -1535,7 +1525,7 @@ function updateSedMed() {
     document.getElementById('sedLabel').innerHTML = `mL/hr of ${med.charAt(0).toUpperCase() + med.slice(1)}`;
     document.getElementById('sedExplanation').innerHTML = explanation;
     document.getElementById('sedResult').classList.remove('hidden');
-}     
+}  
              
     // ====================== UNIT CONVERTER FUNCTIONS ======================
 let conversionMap = {
