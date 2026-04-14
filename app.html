@@ -1481,10 +1481,9 @@ function updateSedMed() {
         return;
     }
 
-    // RASS delta: positive = too awake → increase rate
     const rassDelta = targetRASS - currentRASS;
 
-    // Conservative base step size (mL/hr per RASS point)
+    // Conservative mL/hr per RASS point
     let mlPerRASSPoint = 5;
     if (med === "prop") mlPerRASSPoint = 5;
     else if (med === "mid") mlPerRASSPoint = 2;
@@ -1492,24 +1491,23 @@ function updateSedMed() {
     else if (med === "fent") mlPerRASSPoint = 6;
     else if (med === "ket") mlPerRASSPoint = 4;
 
-    // Calculate change
     let rateChange = rassDelta * mlPerRASSPoint * -1;
 
-    // Hard conservative cap: max 15 mL/hr change at once
+    // Max 15 mL/hr change
     if (Math.abs(rateChange) > 15) {
         rateChange = Math.sign(rateChange) * 15;
     }
 
     let newRate = currentRate + rateChange;
     if (newRate < 0) newRate = 0;
-    newRate = Math.round(newRate * 10) / 10;
 
-    // Weight-based adjustment for Dex and Ketamine (gentle scaling)
+    // Weight-based scaling for Dex and Ketamine (smoother)
     if (med === "dex" || med === "ket") {
-        // Scale the entire new rate by weight ratio (relative to 80kg baseline)
         const weightFactor = weight / 80;
-        newRate = Math.round(newRate * weightFactor * 10) / 10;
-        if (newRate < 0.5) newRate = 0.5; // minimum safe rate
+        newRate = newRate * weightFactor;
+        newRate = Math.max(0.5, Math.round(newRate * 10) / 10); // minimum 0.5 mL/hr
+    } else {
+        newRate = Math.round(newRate * 10) / 10;
     }
 
     // Explanation
