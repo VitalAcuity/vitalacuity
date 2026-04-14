@@ -1732,18 +1732,18 @@ function clearConverter() {
             document.getElementById('rassDescription').textContent = fullDescs[score] || "";
         }
 
-        window.addEventListener('load', () => {
-            console.log("MedVibe fully loaded with combined Emergency section");
+                window.addEventListener('load', () => {
+            console.log("VitalAcuity fully loaded");
+
             setupRASS();
-            updateMed();
-            updateSedMed();
-            updateVasoMed();
+            updateMed();           // This one exists
+            updateVasoMed();       // This one exists
             setDripMode('drops');
-            populateUnits();
-          //  checkIfUnlocked();    // commented out for testing
-            navigate('home');       // force go to home instead
-            
-            
+            populateUnits();       // This will now run successfully
+
+            // Temporarily disabled for testing
+            // checkIfUnlocked();
+            navigate('home');      // Force start on home screen
         });
     </script>
                     </div>   <!-- closes the p-4 pt-6 content area -->
