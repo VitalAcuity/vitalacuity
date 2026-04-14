@@ -308,19 +308,22 @@
             </div>
         </div>                                         
 
-        <!-- IV Medication Calculator -->
+                <!-- ====================== IV MEDICATION CALCULATOR ====================== -->
         <div id="convert" class="hidden">
-            <div class="flex items-center gap-3 mb-6">
-                <button onclick="back()" 
-        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
-    ←
-</button>
-                <h2 class="text-3xl font-semibold">IV Med Calculator</h2>
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">IV Med Calculator</h2>
+                    <div class="w-12"></div>
+                </div>
             </div>
-            <div class="card bg-zinc-900 rounded-3xl p-6 space-y-6">
+
+            <div class="p-4 space-y-6">
+                <!-- Medication Selector -->
                 <div>
                     <label class="block text-sm text-zinc-400 mb-2">Medication</label>
-                    <select id="medSelect" onchange="updateMed()" class="w-full bg-zinc-800 text-white rounded-2xl p-4 text-lg border border-zinc-700">
+                    <select id="medSelect" onchange="updateMed()" 
+                            class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400">
                         <option value="norepi">Norepinephrine – mcg/kg/min</option>
                         <option value="epi">Epinephrine – mcg/kg/min</option>
                         <option value="dopa">Dopamine – mcg/kg/min</option>
@@ -339,32 +342,43 @@
                     </select>
                 </div>
 
+                <!-- Desired Dose + Patient Weight - Fixed horizontal alignment -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm text-zinc-400 mb-2" id="doseLabel">Desired Dose (mcg/kg/min)</label>
-                        <input id="dose" type="number" step="0.01" value="0.1" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                        <label id="doseLabel" class="block text-sm text-zinc-400 mb-2">Desired Dose (mcg/kg/min)</label>
+                        <input id="dose" type="number" step="0.01" value="0.1" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
                     </div>
                     <div>
                         <label class="block text-sm text-zinc-400 mb-2">Patient Weight (kg)</label>
-                        <input id="weight" type="number" value="80" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-5 text-3xl text-center">
+                        <input id="weight" type="number" value="80" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
                     </div>
                 </div>
 
+                <!-- Concentration -->
                 <div>
                     <label class="block text-sm text-zinc-400 mb-2">Concentration (standard)</label>
-                    <input id="conc" type="text" readonly class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-4 text-lg">
+                    <input id="conc" type="text" readonly 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg text-center">
                 </div>
 
-                <button onclick="calcMedDrip()" class="w-full bg-teal-700 hover:bg-emerald-500 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+                <!-- Calculate Button -->
+                <button onclick="calcMedDrip()" 
+                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
                     Calculate mL/hr
                 </button>
 
+                <!-- Result -->
                 <div id="medResult" class="result-box hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
                     <div id="rateDisplay" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
                     <div id="rateLabel" class="text-2xl text-emerald-300 mt-4"></div>
                 </div>
             </div>
-            <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Always verify exact bag concentration and hospital protocol</p>
+
+            <p class="text-center text-xs text-zinc-500 mt-10 px-4">
+                Reference only • Always verify exact bag concentration and hospital protocol
+            </p>
         </div>
 
         <!-- IV Drip Rate Calculator -->
