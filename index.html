@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitalAcuity • Bedside Tools for ER and ICU Clinicians</title>
+  <meta name="description" content="VitalAcuity is a fast, affordable bedside clinical toolkit for ICU and ER nurses, RTs, CRNAs, and NPs. Vasopressor titration, ACLS drugs, ET tube sizing, ABG interpretation, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:          #2de8a0;
+      --teal-bright:   #3dfdb3;
+      --teal-dim:      rgba(45, 232, 160, 0.12);
+      --teal-border:   rgba(45, 232, 160, 0.22);
+      --bg-hero:       #0d2d2a;
+      --bg-cards:      #0a1f1c;
+      --bg-section:    #0c2422;
+      --bg-dark:       #091a17;
+      --bg-card:       rgba(45, 232, 160, 0.06);
+      --white:         #ffffff;
+      --white-80:      rgba(255,255,255,0.80);
+      --white-60:      rgba(255,255,255,0.60);
+      --white-45:      rgba(255,255,255,0.45);
+      --white-20:      rgba(255,255,255,0.20);
+      --white-12:      rgba(255,255,255,0.12);
+      --white-07:      rgba(255,255,255,0.07);
+      --navy:          #0a1628;
+      --font-display:  'Syne', sans-serif;
+      --font-body:     'DM Sans', sans-serif;
+      --radius-sm:     8px;
+      --radius-md:     12px;
+      --radius-lg:     16px;
+      --radius-xl:     20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-dark);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 48px;
+      background: var(--bg-hero);
+      border-bottom: 0.5px solid var(--teal-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand img { height: 34px; width: auto; }
+
+    .nav-brand span {
+      color: var(--teal);
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--white-60);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .btn-nav {
+      background: var(--teal) !important;
+      color: var(--navy) !important;
+      font-weight: 600 !important;
+      padding: 9px 22px;
+      border-radius: var(--radius-sm);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-nav:hover { opacity: 0.88 !important; transform: translateY(-1px); }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--white-60);
+      border-radius: 2px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--bg-hero);
+      text-align: center;
+      padding: 88px 24px 72px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--teal-dim);
+      border: 0.5px solid var(--teal-border);
+      border-radius: 999px;
+      padding: 6px 18px;
+      margin-bottom: 30px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: blink 2s ease infinite;
+    }
+
+    .hero-badge span {
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      color: var(--white);
+      font-size: clamp(34px, 5.5vw, 56px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.028em;
+      max-width: 720px;
+      margin: 0 auto 24px;
+      animation: fadeUp 0.55s 0.08s ease both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--teal);
+    }
+
+    .hero-sub {
+      color: var(--white-60);
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto 48px;
+      animation: fadeUp 0.55s 0.14s ease both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+      animation: fadeUp 0.55s 0.2s ease both;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--navy);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 15px 36px;
+      border-radius: var(--radius-md);
+      transition: opacity 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    .btn-secondary {
+      background: var(--white-07);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 15px 36px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--white-20);
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover { background: var(--white-12); transform: translateY(-2px); }
+
+    .trust-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.55s 0.26s ease both;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trust-item span {
+      color: var(--white-45);
+      font-size: 13px;
+    }
+
+    /* ── EKG DIVIDER ── */
+    .ekg-divider {
+      background: var(--bg-hero);
+      line-height: 0;
+    }
+
+    .ekg-divider svg { width: 100%; display: block; }
+
+    /* ── SECTION SHARED ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      color: var(--white-60);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 520px;
+    }
+
+    /* ── FEATURES ── */
+    #features {
+      background: var(--bg-cards);
+      padding: 80px 48px;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .features-header .section-sub { margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 0.5px solid var(--teal-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      background: rgba(45, 232, 160, 0.09);
+      border-color: rgba(45, 232, 160, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon { margin-bottom: 16px; }
+
+    .feature-title {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      color: var(--white-45);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── SCREENSHOTS ── */
+    #screenshots {
+      background: var(--bg-section);
+      padding: 88px 48px;
+    }
+
+    .screenshots-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .screenshots-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .screenshots-header .section-sub { margin: 0 auto; }
+
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .screenshot-wrap {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 0.5px solid var(--teal-border);
+      transition: transform 0.25s, border-color 0.2s;
+    }
+
+    .screenshot-wrap:hover {
+      transform: translateY(-6px);
+      border-color: rgba(45, 232, 160, 0.5);
+    }
+
+    .screenshot-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .screenshot-caption {
+      text-align: center;
+      color: var(--white-45);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    /* ── PRICING ── */
+    #pricing {
+      background: var(--bg-cards);
+      padding: 88px 48px;
+    }
+
+    .pricing-inner {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .pricing-header .section-sub { margin: 0 auto; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 0.5px solid var(--teal-border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .pricing-card:hover { transform: translateY(-3px); }
+
+    .pricing-card.featured {
+      border: 1.5px solid var(--teal);
+      background: rgba(45, 232, 160, 0.08);
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      background: var(--teal);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .pricing-plan {
+      color: var(--white-60);
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .pricing-price {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .pricing-price sup {
+      font-size: 20px;
+      font-weight: 600;
+      vertical-align: super;
+      line-height: 0;
+    }
+
+    .pricing-period {
+      color: var(--white-45);
+      font-size: 13px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .pricing-divider {
+      height: 0.5px;
+      background: var(--teal-border);
+      margin-bottom: 24px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--white-60);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .pricing-features li svg { flex-shrink: 0; margin-top: 3px; }
+
+    .btn-pricing {
+      display: block;
+      text-align: center;
+      padding: 13px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-pricing:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .btn-pricing-primary {
+      background: var(--teal);
+      color: var(--navy);
+    }
+
+    .btn-pricing-ghost {
+      background: transparent;
+      color: var(--teal);
+      border: 0.5px solid var(--teal-border);
+    }
+
+    /* ── EVIDENCE ── */
+    #clinicians {
+      background: var(--bg-section);
+      padding: 88px 48px;
+    }
+
+    .evidence-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .evidence-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .evidence-header .section-sub { margin: 0 auto; }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .evidence-card {
+      background: var(--bg-card);
+      border: 0.5px solid var(--teal-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .evidence-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(45, 232, 160, 0.45);
+    }
+
+    .evidence-icon { margin-bottom: 4px; }
+
+    .evidence-title {
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .evidence-desc {
+      color: var(--white-45);
+      font-size: 13px;
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .btn-pdf {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 500;
+      border: 0.5px solid var(--teal-border);
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+
+    .btn-pdf:hover { background: var(--teal-dim); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg-hero);
+      border-top: 0.5px solid var(--teal-border);
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-brand img { height: 28px; width: auto; }
+
+    .footer-brand span {
+      color: var(--teal);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .footer-copy {
+      color: var(--white-45);
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: right;
+      max-width: 480px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 65px;
+        left: 0; right: 0;
+        background: var(--bg-hero);
+        border-bottom: 0.5px solid var(--teal-border);
+        padding: 20px 24px;
+        gap: 18px;
+        z-index: 99;
+      }
+      .nav-hamburger { display: flex; }
+      #features, #screenshots, #pricing, #clinicians { padding: 64px 24px; }
+      .features-grid, .screenshots-grid, .pricing-grid, .evidence-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+      footer { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
+      .footer-copy { text-align: left; max-width: 100%; }
+    }
+
+    @media (max-width: 540px) {
+      .hero { padding: 64px 20px 56px; }
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-secondary { width: 100%; max-width: 300px; text-align: center; }
+      .trust-row { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <a href="/" class="nav-brand">
+      <img src="https://www.vitalacuity.app/logo.png" alt="VitalAcuity" />
+      <span>VitalAcuity</span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#screenshots">Screenshots</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#clinicians">For clinicians</a></li>
+      <li><a href="https://www.vitalacuity.app/app.html" class="btn-nav">Open app</a></li>
+    </ul>
+    <div class="nav-hamburger" id="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span>Built for ICU &amp; ER clinicians</span>
+    </div>
+
+    <h1>The clinical toolkit ICU and ER teams <em>actually</em> reach for.</h1>
+
+    <p class="hero-sub">
+      Vasopressor titration, sedation protocols, ACLS drugs, ET tube sizing, ABG interpretation — all in one fast, affordable bedside app.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://www.vitalacuity.app/app.html" class="btn-primary">Open app</a>
+      <a href="#pricing" class="btn-secondary">See pricing</a>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#2de8a0" stroke-width="1.5"/><path d="M5 8.5l2 2 4-4" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>No ads</span>
+      </div>
+      <div class="trust-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#2de8a0" stroke-width="1.5"/><path d="M5 8.5l2 2 4-4" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Cancel anytime</span>
+      </div>
+      <div class="trust-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#2de8a0" stroke-width="1.5"/><path d="M5 8.5l2 2 4-4" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Designed by RNs &amp; RRTs</span>
+      </div>
+      <div class="trust-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#2de8a0" stroke-width="1.5"/><path d="M5 8.5l2 2 4-4" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>From $6.99/month</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EKG DIVIDER ── -->
+  <div class="ekg-divider">
+    <svg viewBox="0 0 1200 64" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <line x1="0" y1="32" x2="330" y2="32" stroke="rgba(45,232,160,0.2)" stroke-width="1.5"/>
+      <polyline points="330,32 368,32 382,7 398,58 414,3 430,60 446,32 486,32" fill="none" stroke="#2de8a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="486" y1="32" x2="1200" y2="32" stroke="rgba(45,232,160,0.2)" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <!-- ── FEATURES ── -->
+  <section id="features">
+    <div class="features-header">
+      <span class="section-label">What's inside</span>
+      <h2 class="section-heading">Everything you need at the bedside. No Fluff, just efficiency</h2>
+      <p class="section-sub">Clean, fast, and built to simplify the tough tasks — with large touch targets that work even in high-pressure situations.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect x="1.5" y="1.5" width="25" height="25" rx="6.5" stroke="#2de8a0" stroke-width="1.5"/>
+            <path d="M7 14h3.5L13 8l4 12 2.5-6H23" stroke="#2de8a0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">IV tools</div>
+        <div class="feature-desc">Drip rate calculator, medication dosing, sedation &amp; vasopressor titration with MAP goals.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 3.5C10 3.5 7 7 7 11c0 6.5 7 13.5 7 13.5s7-7 7-13.5c0-4-3-7.5-7-7.5z" stroke="#2de8a0" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="14" cy="11" r="3" stroke="#2de8a0" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Emergency &amp; airway</div>
+        <div class="feature-desc">RSI drugs with contraindications, ET tube sizing &amp; depth, ACLS/PALS/NRP, ideal body weight.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="11.5" stroke="#2de8a0" stroke-width="1.5"/>
+            <path d="M14 8v6l4 4" stroke="#2de8a0" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Daily essentials</div>
+        <div class="feature-desc">6-step ABG interpreter, Glasgow Coma Scale, RASS score, full unit converter.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCREENSHOTS ── -->
+  <section id="screenshots">
+    <div class="screenshots-inner">
+      <div class="screenshots-header">
+        <span class="section-label">The app</span>
+        <h2 class="section-heading">Sharp when it counts.</h2>
+        <p class="section-sub">Intuitive design built for the chaos of critical care — answers in seconds, not minutes.</p>
+      </div>
+
+      <div class="screenshots-grid">
+        <div>
+          <div class="screenshot-wrap">
+            <img src="https://www.vitalacuity.app/screen1.png" alt="Main Menu" />
+          </div>
+          <p class="screenshot-caption">Main Menu</p>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <img src="https://www.vitalacuity.app/screen2.png" alt="Intubation Menu" />
+          </div>
+          <p class="screenshot-caption">Intubation Menu</p>
+        </div>
+        <div>
+          <div class="screenshot-wrap">
+            <img src="https://www.vitalacuity.app/screen7.png" alt="IV tools" />
+          </div>
+          <p class="screenshot-caption">IV tools</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ── -->
+  <section id="pricing">
+    <div class="pricing-inner">
+      <div class="pricing-header">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-heading">Full access. No hidden fees.</h2>
+        <p class="section-sub">One affordable plan, three ways to pay. Every tool included from day one.</p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- Monthly -->
+        <div class="pricing-card">
+          <div class="pricing-plan">Monthly</div>
+          <div class="pricing-price"><sup>$</sup>6.99</div>
+          <div class="pricing-period">per month<br>Cancel anytime</div>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Full access to all tools
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Future updates included
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Cancel anytime
+            </li>
+          </ul>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/7be04b1b-2cf1-40bc-a187-08746626dd30" class="btn-pricing btn-pricing-ghost">Subscribe monthly</a>
+        </div>
+
+        <!-- Annual (featured) -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most popular</div>
+          <div class="pricing-plan">Annual</div>
+          <div class="pricing-price"><sup>$</sup>59.99</div>
+          <div class="pricing-period">billed yearly<br>Save 28% vs monthly</div>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Full access to all tools
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Future updates included
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Best value per month
+            </li>
+          </ul>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/5d966751-3699-4307-866a-1ed063709042" class="btn-pricing btn-pricing-primary">Subscribe annually</a>
+        </div>
+
+        <!-- Lifetime -->
+        <div class="pricing-card">
+          <div class="pricing-plan">Lifetime</div>
+          <div class="pricing-price"><sup>$</sup>129.99</div>
+          <div class="pricing-period">one-time payment<br>Forever access</div>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Full access to all tools
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              All future updates free
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.75" stroke="#2de8a0" stroke-width="1.4"/><path d="M4.5 8l2 2 4-4" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Pay once, use forever
+            </li>
+          </ul>
+          <a href="https://vitalacuity.lemonsqueezy.com/checkout/buy/c0d1bd7d-7383-4b4d-bf08-da6199c9a72f" class="btn-pricing btn-pricing-ghost">Get lifetime access</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EVIDENCE ── -->
+  <section id="clinicians">
+    <div class="evidence-inner">
+      <div class="evidence-header">
+        <span class="section-label">For clinicians &amp; leadership</span>
+        <h2 class="section-heading">Clinical evidence summaries.</h2>
+        <p class="section-sub">Peer-reviewed guideline support for VitalAcuity's titration tools — designed for physicians and clinical leadership.</p>
+      </div>
+
+      <div class="evidence-grid">
+
+        <div class="evidence-card">
+          <div class="evidence-icon">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1.5" y="1.5" width="23" height="23" rx="5.5" stroke="#2de8a0" stroke-width="1.5"/>
+              <path d="M7 9h12M7 13h12M7 17h7" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="evidence-title">Vasopressor &amp; sedation overview</div>
+          <div class="evidence-desc">Comprehensive summary covering both vasopressor and sedation management guidelines.</div>
+          <a href="https://www.vitalacuity.app/evidence-summary.pdf" class="btn-pdf" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5h9M7 2v7m0 0L4.5 6.5M7 9l2.5-2.5" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download PDF
+          </a>
+        </div>
+
+        <div class="evidence-card">
+          <div class="evidence-icon">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1.5" y="1.5" width="23" height="23" rx="5.5" stroke="#2de8a0" stroke-width="1.5"/>
+              <path d="M7 9h12M7 13h12M7 17h7" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="evidence-title">Sedation titration helper</div>
+          <div class="evidence-desc">RASS-guided light sedation protocols and safety analysis for propofol, dexmedetomidine, midazolam, fentanyl, and ketamine.</div>
+          <a href="https://www.vitalacuity.app/sedation-evidence-summary.pdf" class="btn-pdf" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5h9M7 2v7m0 0L4.5 6.5M7 9l2.5-2.5" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download PDF
+          </a>
+        </div>
+
+        <div class="evidence-card">
+          <div class="evidence-icon">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1.5" y="1.5" width="23" height="23" rx="5.5" stroke="#2de8a0" stroke-width="1.5"/>
+              <path d="M7 9h12M7 13h12M7 17h7" stroke="#2de8a0" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="evidence-title">Vasopressor titration helper</div>
+          <div class="evidence-desc">MAP-goal directed titration protocols and safety analysis for norepinephrine, epinephrine, dopamine, dobutamine, and vasopressin.</div>
+          <a href="https://www.vitalacuity.app/vaso-evidence-summary.pdf" class="btn-pdf" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5h9M7 2v7m0 0L4.5 6.5M7 9l2.5-2.5" stroke="#2de8a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download PDF
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── */
+  <footer>
+    <div class="footer-brand">
+      <img src="https://www.vitalacuity.app/logo.png" alt="VitalAcuity" />
+      <span>VitalAcuity</span>
+    </div>
+    <div class="footer-copy">
+      © 2026 VitalAcuity • Designed by a RRT/RN team for our brothers and sisters in the ICUs, ERs, ORs, and everywhere else in hospital-land.<br>
+      Not a substitute for clinical judgment. Always verify with current institutional protocols and guidelines.
+    </div>
+  </footer>
+
+</body>
+</html>
