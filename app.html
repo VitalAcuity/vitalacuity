@@ -452,7 +452,7 @@
             <p class="text-center text-xs text-zinc-500 mt-10">Reference only • Always verify with pump settings and hospital protocol</p>
         </div>
 
-                <!-- ====================== UNIT CONVERTER ====================== -->
+                     <!-- ====================== UNIT CONVERTER ====================== -->
         <div id="units" class="hidden">
             <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
                 <div class="flex items-center justify-between">
@@ -462,47 +462,54 @@
                 </div>
             </div>
 
-            <div class="p-4 space-y-8">
-                <!-- From -->
+            <div class="p-4 space-y-6">
+                <!-- Value 1 -->
                 <div>
-                    <label class="text-zinc-400 text-sm block mb-2">From</label>
-                    <input id="fromValue" type="number" placeholder="Value" 
-                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400 mb-3">
-                    <select id="fromUnit" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400">
-                        <!-- Populated by JS -->
-                    </select>
+                    <label class="block text-sm text-zinc-400 mb-2">Value</label>
+                    <input id="unitValue1" type="number" step="any" value="1" 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
                 </div>
 
-                <!-- To -->
+                <!-- From Unit -->
                 <div>
-                    <label class="text-zinc-400 text-sm block mb-2">To</label>
-                    <input id="toValue" type="number" placeholder="Result" readonly 
-                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none mb-3">
-                    <select id="toUnit" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg focus:outline-none focus:border-emerald-400">
-                        <!-- Populated by JS -->
-                    </select>
+                    <label class="block text-sm text-zinc-400 mb-2">From</label>
+                    <select id="unitFrom" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400"></select>
                 </div>
 
-                <div class="flex gap-3 pt-4">
+                <!-- Value 2 (Result) -->
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">Result</label>
+                    <input id="unitValue2" type="number" readonly 
+                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center">
+                </div>
+
+                <!-- To Unit -->
+                <div>
+                    <label class="block text-sm text-zinc-400 mb-2">To</label>
+                    <select id="unitTo" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400"></select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
                     <button onclick="convertUnits()" 
-                            class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                            class="flex-1 bg-teal-700 hover:bg-teal-600 py-5 rounded-3xl text-xl font-semibold active:scale-95 transition-all">
                         Convert →
                     </button>
                     <button onclick="reverseConversion()" 
-                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
-                        ← Reverse
+                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold active:scale-95 transition-all">
+                        Reverse
                     </button>
                     <button onclick="clearConverter()" 
-                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold transition-all active:scale-[0.98]">
+                            class="flex-1 bg-zinc-700 hover:bg-zinc-600 py-5 rounded-3xl text-xl font-semibold active:scale-95 transition-all">
                         Clear
                     </button>
                 </div>
 
-                <div id="convertResult" class="hidden bg-zinc-900 rounded-3xl p-6 text-center">
-                    <div class="text-emerald-400 text-4xl font-bold" id="resultValue"></div>
-                </div>
+                <p class="text-center text-xs text-zinc-500 mt-4">
+                    ICU / Nursing common units • Reference only
+                </p>
             </div>
-        </div>                                              
+        </div>                                                 
 
                               <!-- ====================== EMERGENCY SECTION (Clean - RSI & ETT removed) ====================== -->
         <div id="emergency" class="hidden">
@@ -1504,141 +1511,124 @@
             document.getElementById('sedResult').classList.remove('hidden');
         }      
 
-                function populateUnits() {
-            const units = {
-                // Weight / Mass
-                "kg": "Kilograms (kg)",
-                "g": "Grams (g)",
-                "mg": "Milligrams (mg)",
-                "mcg": "Micrograms (mcg)",
-                "lb": "Pounds (lb)",
-                "oz": "Ounces (oz)",
+       let conversionMap = {
+    // Weight / Mass
+    "kg": { "g": 1000, "mg": 1e6, "mcg": 1e9, "lb": 2.20462, "oz": 35.274 },
+    "g": { "kg": 0.001, "mg": 1000, "mcg": 1e6, "lb": 0.00220462, "oz": 0.035274 },
+    "mg": { "kg": 1e-6, "g": 0.001, "mcg": 1000, "lb": 2.20462e-6, "oz": 3.5274e-5 },
+    "mcg": { "kg": 1e-9, "g": 1e-6, "mg": 0.001, "lb": 2.20462e-9, "oz": 3.5274e-8 },
+    "lb": { "kg": 0.453592, "g": 453.592, "mg": 453592, "mcg": 4.53592e8, "oz": 16 },
+    "oz": { "kg": 0.0283495, "g": 28.3495, "mg": 28349.5, "mcg": 2.83495e7, "lb": 0.0625 },
 
-                // Volume / Fluid
-                "L": "Liters (L)",
-                "mL": "Milliliters (mL)",
-                "cc": "Cubic Centimeters (cc)",
-                "fl_oz": "Fluid Ounces (fl oz)",
+    // Volume (fluids, meds, IV)
+    "L": { "mL": 1000, "cc": 1000, "tsp": 202.884, "Tbsp": 67.628, "fl oz": 33.814, "cup": 4.22675, "pt": 2.11338, "qt": 1.05669, "gal": 0.264172 },
+    "mL": { "L": 0.001, "cc": 1, "tsp": 0.202884, "Tbsp": 0.067628, "fl oz": 0.033814, "cup": 0.00422675, "pt": 0.00211338, "qt": 0.00105669, "gal": 0.000264172 },
+    "cc": { "L": 0.001, "mL": 1, "tsp": 0.202884, "Tbsp": 0.067628, "fl oz": 0.033814, "cup": 0.00422675, "pt": 0.00211338, "qt": 0.00105669, "gal": 0.000264172 },
+    "tsp": { "mL": 4.92892, "Tbsp": 0.333333, "fl oz": 0.166667, "cup": 0.0208333 },
+    "Tbsp": { "mL": 14.7868, "tsp": 3, "fl oz": 0.5, "cup": 0.0625 },
+    "fl oz": { "mL": 29.5735, "tsp": 6, "Tbsp": 2, "cup": 0.125, "pt": 0.0625 },
+    "cup": { "mL": 236.588, "fl oz": 8, "pt": 0.5, "qt": 0.25 },
+    "pt": { "mL": 473.176, "fl oz": 16, "cup": 2, "qt": 0.5, "gal": 0.125 },
+    "qt": { "mL": 946.353, "fl oz": 32, "cup": 4, "pt": 2, "gal": 0.25 },
+    "gal": { "mL": 3785.41, "fl oz": 128, "qt": 4, "pt": 8 },
 
-                // Length
-                "cm": "Centimeters (cm)",
-                "m": "Meters (m)",
-                "inch": "Inches (in)",
-                "ft": "Feet (ft)",
+    // Drops (IV tubing)
+    "gtt": { "mL": 0.05 },   // approx 20 gtt/mL standard macro
+    "mcgtt": { "mL": 0.016667 }, // approx 60 mcgtt/mL microdrip
 
-                // Pressure
-                "mmHg": "mmHg (Blood Pressure)",
-                "kPa": "kPa (Blood Pressure)",
-                "cmH2O": "cmH₂O (Ventilator Pressure)",
+    // Length
+    "cm": { "m": 0.01, "mm": 10, "in": 0.393701, "ft": 0.0328084 },
+    "m": { "cm": 100, "mm": 1000, "in": 39.3701, "ft": 3.28084 },
+    "mm": { "cm": 0.1, "m": 0.001, "in": 0.0393701, "ft": 0.00328084 },
+    "in": { "cm": 2.54, "m": 0.0254, "mm": 25.4, "ft": 0.083333 },
+    "ft": { "cm": 30.48, "m": 0.3048, "mm": 304.8, "in": 12 },
 
-                // Temperature
-                "C": "Celsius (°C)",
-                "F": "Fahrenheit (°F)"
-            };
+    // Pressure
+    "mmHg": { "kPa": 0.133322, "cmH2O": 1.35951 },
+    "kPa": { "mmHg": 7.50062, "cmH2O": 10.1972 },
+    "cmH2O": { "mmHg": 0.735559, "kPa": 0.0980665 },
 
-            const fromSelect = document.getElementById('fromUnit');
-            const toSelect = document.getElementById('toUnit');
+    // Other clinical
+    "mEq": {}, // placeholder - usually 1:1 for many electrolytes, but context-specific
+    "U": {},   // units (insulin, heparin) - often not directly convertible without concentration
+    "gr": { "mg": 64.79891 }  // grains
+};
 
-            fromSelect.innerHTML = '<option value="">Select unit</option>';
-            toSelect.innerHTML = '<option value="">Select unit</option>';
+function populateUnits() {
+    const fromSelect = document.getElementById('unitFrom');
+    const toSelect = document.getElementById('unitTo');
+    fromSelect.innerHTML = '';
+    toSelect.innerHTML = '';
 
-            Object.keys(units).forEach(key => {
-                const opt1 = document.createElement('option');
-                opt1.value = key;
-                opt1.textContent = units[key];
-                fromSelect.appendChild(opt1);
+    const units = [
+        "kg","g","mg","mcg","lb","oz",
+        "L","mL","cc","tsp","Tbsp","fl oz","cup","pt","qt","gal","gtt","mcgtt",
+        "cm","m","mm","in","ft",
+        "mmHg","kPa","cmH2O",
+        "°C","°F"
+    ];
 
-                const opt2 = document.createElement('option');
-                opt2.value = key;
-                opt2.textContent = units[key];
-                toSelect.appendChild(opt2);
-            });
-        }
+    units.forEach(unit => {
+        const opt1 = document.createElement('option');
+        opt1.value = unit;
+        opt1.textContent = unit;
+        fromSelect.appendChild(opt1);
 
-            function convertUnits() {
-            const fromValue = parseFloat(document.getElementById('fromValue').value);
-            const fromUnit = document.getElementById('fromUnit').value;
-            const toUnit = document.getElementById('toUnit').value;
+        const opt2 = document.createElement('option');
+        opt2.value = unit;
+        opt2.textContent = unit;
+        toSelect.appendChild(opt2);
+    });
 
-            if (!fromValue || !fromUnit || !toUnit) {
-                alert("Please enter a value and select both units");
-                return;
-            }
+    // Sensible defaults
+    fromSelect.value = "kg";
+    toSelect.value = "lb";
+}
 
-            let result = fromValue;
+function convertUnits() {
+    const val = parseFloat(document.getElementById('unitValue1').value);
+    const from = document.getElementById('unitFrom').value;
+    const to = document.getElementById('unitTo').value;
 
-            const conversionMap = {
-                // Weight
-                "kg": { "g": 1000, "mg": 1e6, "mcg": 1e9, "lb": 2.20462, "oz": 35.274 },
-                "g": { "kg": 0.001, "mg": 1000, "mcg": 1e6, "lb": 0.00220462, "oz": 0.035274 },
-                "mg": { "kg": 1e-6, "g": 0.001, "mcg": 1000, "lb": 2.20462e-6, "oz": 3.5274e-5 },
-                "mcg": { "kg": 1e-9, "g": 1e-6, "mg": 0.001, "lb": 2.20462e-9, "oz": 3.5274e-8 },
-                "lb": { "kg": 0.453592, "g": 453.592, "mg": 453592, "mcg": 4.53592e8, "oz": 16 },
-                "oz": { "kg": 0.0283495, "g": 28.3495, "mg": 28349.5, "mcg": 2.83495e7, "lb": 0.0625 },
+    if (isNaN(val) || !from || !to) {
+        alert("Please enter a valid number and select units");
+        return;
+    }
 
-                // Volume
-                "L": { "mL": 1000, "cc": 1000, "fl_oz": 33.814 },
-                "mL": { "L": 0.001, "cc": 1, "fl_oz": 0.033814 },
-                "cc": { "L": 0.001, "mL": 1, "fl_oz": 0.033814 },
-                "fl_oz": { "L": 0.0295735, "mL": 29.5735, "cc": 29.5735 },
+    let result = 0;
 
-                // Length
-                "cm": { "m": 0.01, "inch": 0.393701, "ft": 0.0328084 },
-                "m": { "cm": 100, "inch": 39.3701, "ft": 3.28084 },
-                "inch": { "cm": 2.54, "m": 0.0254, "ft": 0.083333 },
-                "ft": { "cm": 30.48, "m": 0.3048, "inch": 12 },
+    // Temperature special cases
+    if (from === '°C' && to === '°F') result = (val * 9/5) + 32;
+    else if (from === '°F' && to === '°C') result = (val - 32) * 5/9;
+    // Drop / microdrop approximations
+    else if (from === 'gtt' && to === 'mL') result = val * 0.05;
+    else if (from === 'mcgtt' && to === 'mL') result = val * 0.016667;
+    else if (conversionMap[from] && conversionMap[from][to] !== undefined) {
+        result = val * conversionMap[from][to];
+    } else if (conversionMap[to] && conversionMap[to][from] !== undefined) {
+        result = val / conversionMap[to][from];
+    } else {
+        alert(`Conversion between ${from} and ${to} is not directly supported in this tool.\n\nTry a different pair or use clinical context.`);
+        return;
+    }
 
-                // Pressure
-                "mmHg": { "kPa": (v) => v * 0.133322, "cmH2O": (v) => v * 1.35951 },
-                "kPa": { "mmHg": (v) => v * 7.50062, "cmH2O": (v) => v * 10.1972 },
-                "cmH2O": { "mmHg": (v) => v * 0.735559, "kPa": (v) => v * 0.0980665 },
+    document.getElementById('unitValue2').value = parseFloat(result.toFixed(4));
+}
 
-                // Temperature
-                "C": { "F": (c) => (c * 9/5) + 32 },
-                "F": { "C": (f) => (f - 32) * 5/9 }
-            };
+function reverseConversion() {
+    const val2 = document.getElementById('unitValue2').value;
+    if (!val2) return;
+    const tempFrom = document.getElementById('unitFrom').value;
+    document.getElementById('unitFrom').value = document.getElementById('unitTo').value;
+    document.getElementById('unitTo').value = tempFrom;
+    document.getElementById('unitValue1').value = val2;
+    convertUnits();
+}
 
-            if (fromUnit === toUnit) {
-                result = fromValue;
-            } else if (conversionMap[fromUnit] && conversionMap[fromUnit][toUnit] !== undefined) {
-                const conv = conversionMap[fromUnit][toUnit];
-                result = typeof conv === 'function' ? conv(fromValue) : fromValue * conv;
-            } else {
-                alert("Conversion between these units is not supported yet.");
-                return;
-            }
-
-            document.getElementById('toValue').value = Number(result).toFixed(2);
-            document.getElementById('resultValue').textContent = Number(result).toFixed(2) + " " + toUnit;
-            document.getElementById('convertResult').classList.remove('hidden');
-        }
-
-        function clearConverter() {
-            document.getElementById('fromValue').value = '';
-            document.getElementById('toValue').value = '';
-            document.getElementById('convertResult').classList.add('hidden');
-        }    
-
-        function reverseConversion() {
-            const fromValue = document.getElementById('fromValue').value;
-            const fromUnit = document.getElementById('fromUnit').value;
-            const toValue = document.getElementById('toValue').value;
-            const toUnit = document.getElementById('toUnit').value;
-
-            if (!toValue || !toUnit) {
-                alert("Convert first before reversing");
-                return;
-            }
-
-            // Swap values and units
-            document.getElementById('fromValue').value = toValue;
-            document.getElementById('fromUnit').value = toUnit;
-            document.getElementById('toValue').value = fromValue;
-            document.getElementById('toUnit').value = fromUnit;
-
-            // Run conversion in reverse
-            convertUnits();
-        }
+function clearConverter() {
+    document.getElementById('unitValue1').value = '';
+    document.getElementById('unitValue2').value = '';
+}         
 
         
 
