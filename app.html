@@ -223,42 +223,43 @@
                 </div>
             </div>
         </div>
-                                         <!-- VASOPRESSOR TITRATION HELPER - final with safety note -->
-        <div id="vaso" class="hidden p-6">
-            <div class="flex items-center justify-between mb-6">
-                <button onclick="back()" 
-                        class="text-6xl text-teal-400 px-6 py-3 active:scale-95 transition-transform">
-                    ←
-                </button>
-                <h2 class="text-3xl font-semibold">Vasopressor Titration</h2>
-                <div class="w-16"></div>
+        <!-- ====================== VASOPRESSOR TITRATION HELPER ====================== -->
+        <div id="vaso" class="hidden">
+            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
+                    <h2 class="text-3xl font-bold text-white">Vasopressor Titration</h2>
+                    <div class="w-12"></div>
+                </div>
             </div>
 
-            <div class="space-y-6">
-                <select id="vasoMed" onchange="updateVasoMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+            <div class="p-4 space-y-6">
+                <!-- Medication Selector -->
+                <select id="vasoMed" onchange="updateVasoMed()" 
+                        class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
                     <option value="norepi">Norepinephrine (first-line)</option>
                     <option value="epi">Epinephrine</option>
                     <option value="dopa">Dopamine</option>
                     <option value="dobu">Dobutamine</option>
                 </select>
 
-             <div class="grid grid-cols-2 gap-4">
-                <!-- Current Rate -->
-                <div>
-                    <label class="text-zinc-400 text-sm block mb-2">Current rate (mL/hr)</label>
-                    <input id="currentRate" type="number" 
-                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                <!-- Current Rate + Patient Weight - Fixed alignment -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-zinc-400 text-sm block mb-2">Current rate (mL/hr)</label>
+                        <input id="currentRate" type="number" value="10" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                    </div>
+                    <div>
+                        <label class="text-zinc-400 text-sm block mb-2">Patient weight (kg)</label>
+                        <input id="patientWeight" type="number" value="80" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                    </div>
                 </div>
 
-                <!-- Patient Weight -->
-                <div>
-                    <label class="text-zinc-400 text-sm block mb-2">Patient weight (kg)</label>
-                    <input id="patientWeight" type="number" 
-                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                </div>
-            </div>
-
-                <select id="vasoChange" onchange="toggleMAPInput()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
+                <!-- Change Type -->
+                <select id="vasoChange" onchange="toggleMAPInput()" 
+                        class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
                     <option value="increase005">Increase by 0.05 mcg/kg/min</option>
                     <option value="increase01">Increase by 0.1 mcg/kg/min</option>
                     <option value="decrease005">Decrease by 0.05 mcg/kg/min</option>
@@ -266,27 +267,36 @@
                     <option value="targetMAP" selected>Target MAP (Conservative / Moderate / Aggressive)</option>
                 </select>
 
-                <div id="mapInputGroup">
-                    <label class="block text-sm text-zinc-400 mb-2">Current MAP (mmHg) — arterial line</label>
-                    <input id="currentMAP" type="number" value="58" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center mb-4">
-
-                    <label class="block text-sm text-zinc-400 mb-2">Target MAP (mmHg) — default 65 mmHg</label>
-                    <input id="targetMAP" type="number" value="65" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-3xl text-center mb-4">
-
-                    <label class="block text-sm text-zinc-400 mb-2">Titration Intensity</label>
-                    <select id="titrationIntensity" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl">
-                        <option value="conservative">Conservative (safest, smallest steps)</option>
-                        <option value="moderate" selected>Moderate (standard)</option>
-                        <option value="aggressive">Aggressive (for refractory shock)</option>
-                    </select>
+                <!-- MAP Inputs -->
+                <div id="mapInputGroup" class="space-y-4">
+                    <div>
+                        <label class="text-zinc-400 text-sm block mb-2">Current MAP (mmHg) — arterial line</label>
+                        <input id="currentMAP" type="number" value="58" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                    </div>
+                    <div>
+                        <label class="text-zinc-400 text-sm block mb-2">Target MAP (mmHg)</label>
+                        <input id="targetMAP" type="number" value="65" 
+                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
+                    </div>
+                    <div>
+                        <label class="text-zinc-400 text-sm block mb-2">Titration Intensity</label>
+                        <select id="titrationIntensity" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
+                            <option value="conservative">Conservative (safest, smallest steps)</option>
+                            <option value="moderate" selected>Moderate (standard)</option>
+                            <option value="aggressive">Aggressive (for refractory shock)</option>
+                        </select>
+                    </div>
                 </div>
 
+                <!-- Calculate Button -->
                 <button onclick="calcVasoTitration()" 
-                        class="w-full bg-teal-700 hover:bg-teal-800 py-6 rounded-3xl text-2xl font-semibold">
+                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-semibold transition-all active:scale-[0.98]">
                     Calculate New Rate
                 </button>
 
-                <div id="vasoResult" class="hidden result-box bg-zinc-800 rounded-3xl p-6 text-center">
+                <!-- Result -->
+                <div id="vasoResult" class="hidden bg-zinc-800 rounded-3xl p-6 text-center">
                     <div id="vasoNewRate" class="text-teal-400 text-7xl font-semibold"></div>
                     <div id="vasoLabel" class="text-xl mt-2"></div>
                     <div id="vasoExplanation" class="text-sm text-zinc-400 mt-4"></div>
@@ -296,7 +306,7 @@
                     </div>
                 </div>
             </div>
-        </div>               
+        </div>                                         
 
         <!-- IV Medication Calculator -->
         <div id="convert" class="hidden">
