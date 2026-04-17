@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VitalAcuity — For ICU & ER Unit Leadership</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #085041;
+    --green-mid: #0F6E56;
+    --green: #1D9E75;
+    --green-light: #5DCAA5;
+    --green-pale: #E1F5EE;
+    --text: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #7a7a7a;
+    --border: #e0e0e0;
+    --surface: #f7f7f5;
+    --white: #ffffff;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--text);
+    background: var(--white);
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .logo-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .header-tag {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green-mid);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--green-pale);
+    border: 1px solid var(--green-light);
+    padding: 5px 12px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    margin-bottom: 2.5rem;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    max-width: 600px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--green-mid);
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+
+  /* ── Section labels ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  /* ── Problem grid ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 2.5rem;
+  }
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.125rem;
+  }
+  .problem-card .icon {
+    font-size: 15px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .problem-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ── Features card ── */
+  .features-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    background: var(--white);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    margin-top: 12px;
+  }
+  .feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .check {
+    color: var(--green);
+    font-size: 13px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Differentiator ── */
+  .differentiator {
+    background: var(--green-pale);
+    border: 1px solid var(--green-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .differentiator::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--green);
+  }
+  .differentiator h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .differentiator p {
+    font-size: 13.5px;
+    color: var(--green-mid);
+    line-height: 1.65;
+  }
+
+  /* ── Pricing table ── */
+  .pricing-wrap {
+    margin-bottom: 2.5rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.highlight { background: var(--surface); }
+  .price { font-weight: 500; color: var(--text); }
+  .table-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    padding: 0 4px;
+  }
+
+  /* ── Compliance ── */
+  .compliance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 2.5rem;
+  }
+  .compliance-badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .badge-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .badge-val {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* ── Pilot box ── */
+  .pilot-box {
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .pilot-box h3 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .pilot-box > p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+    line-height: 1.65;
+  }
+  .pilot-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pilot-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .step-num {
+    background: var(--green);
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── CTA footer ── */
+  .cta {
+    background: var(--green-dark);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .cta h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: white;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .cta p {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 1.25rem;
+  }
+  .cta-contacts {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-link {
+    background: white;
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .cta-link:hover { background: var(--green-pale); }
+
+  /* ── Footer line ── */
+  .footer-line {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .footer-line span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .footer-line a {
+    font-size: 12px;
+    color: var(--green-mid);
+    text-decoration: none;
+  }
+
+  @media (max-width: 560px) {
+    .header { flex-direction: column; gap: 12px; }
+    .hero h1 { font-size: 28px; }
+    .problem-grid, .features-grid, .compliance-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { font-size: 13px; }
+    .page { padding: 1.5rem; }
+    .hero h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-mark">
+      <div class="logo-dot"></div>
+      <span class="logo-name">VitalAcuity</span>
+    </div>
+    <span class="header-tag">For ICU &amp; ER unit leadership</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Give your team the bedside tool they'll <em>actually</em> reach for — configured to your protocols.</h1>
+    <p>VitalAcuity is a clinical decision support app built for critical care. Vasopressor titration, sedation protocols, ACLS drugs, airway tools, ABG interpretation — all in one fast, mobile-first app, customized to your unit's exact formulary.</p>
+  </div>
+
+  <!-- Problem -->
+  <div class="section-label">The problem your staff faces</div>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <span class="icon">⏱</span>
+      <p>Generic drug references are slow and not calibrated to your unit's titration thresholds.</p>
+    </div>
+    <div class="problem-card">
+      <span class="icon">📋</span>
+      <p>Staff pull up different references and get different answers. Variability costs time and introduces risk.</p>
+    </div>
+    <div class="problem-card">
+      <span class="icon">📱</span>
+      <p>Hospital-approved apps are often outdated, desktop-only, or lack the tools staff actually need at the bedside.</p>
+    </div>
+    <div class="problem-card">
+      <span class="icon">🔄</span>
+      <p>Onboarding new nurses to your unit's drip protocols takes time when there's no single, reliable reference.</p>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features-card">
+    <div class="section-label">What VitalAcuity includes</div>
+    <div class="features-grid">
+      <div class="feature"><span class="check">✓</span><span>Vasopressor titration with MAP-goal tracking (norepi, epi, dopamine, dobutamine, vasopressin)</span></div>
+      <div class="feature"><span class="check">✓</span><span>Sedation titration — RASS-guided protocols for propofol, dex, midazolam, fentanyl, ketamine</span></div>
+      <div class="feature"><span class="check">✓</span><span>RSI drugs with contraindications, ET tube sizing &amp; depth, IBW</span></div>
+      <div class="feature"><span class="check">✓</span><span>ACLS / PALS / NRP reference</span></div>
+      <div class="feature"><span class="check">✓</span><span>6-step ABG interpreter</span></div>
+      <div class="feature"><span class="check">✓</span><span>GCS, RASS score, full unit converter</span></div>
+      <div class="feature"><span class="check">✓</span><span>IV drip rate calculator</span></div>
+      <div class="feature"><span class="check">✓</span><span>Peer-reviewed clinical evidence summaries for medical directors</span></div>
+    </div>
+  </div>
+
+  <!-- Differentiator -->
+  <div class="differentiator">
+    <h3>Configured to your unit's protocols — within 72 hours.</h3>
+    <p>Unlike generic apps, VitalAcuity can be customized to your hospital's specific vasopressor titration increments, drip rate ranges, and sedation targets. Your nurses reference <em>your</em> protocols, not generic guidelines. Setup is completed within 72 hours of receiving your formulary details. No IT project required.</p>
+  </div>
+
+  <!-- Pricing -->
+  <div class="pricing-wrap">
+    <div class="section-label">Institutional pricing — per seat, annual</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Seats</th>
+          <th>Per seat / mo</th>
+          <th>Annual total</th>
+          <th>Includes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Unit starter</td>
+          <td>5 seats</td>
+          <td class="price">$25</td>
+          <td class="price">$1,500 / yr</td>
+          <td>Custom protocol config</td>
+        </tr>
+        <tr class="highlight">
+          <td>Unit standard</td>
+          <td>10–15 seats</td>
+          <td class="price">$22</td>
+          <td class="price">$2,640–$3,960 / yr</td>
+          <td>Custom config + onboarding call</td>
+        </tr>
+        <tr>
+          <td>Full unit</td>
+          <td>20–30 seats</td>
+          <td class="price">$18</td>
+          <td class="price">$4,320–$6,480 / yr</td>
+          <td>Custom config + onboarding + quarterly review</td>
+        </tr>
+        <tr>
+          <td>Department-wide</td>
+          <td>30+ seats</td>
+          <td class="price">Custom</td>
+          <td class="price">Contact us</td>
+          <td>Full deployment support</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="table-note">Month-to-month available at a 20% premium. All tiers include all future updates.</p>
+  </div>
+
+  <!-- Compliance -->
+  <div class="section-label">Compliance &amp; IT considerations</div>
+  <div class="compliance-grid">
+    <div class="compliance-badge">
+      <div class="badge-label">HIPAA</div>
+      <div class="badge-val">No PHI entered or stored</div>
+    </div>
+    <div class="compliance-badge">
+      <div class="badge-label">IT approval</div>
+      <div class="badge-val">BYOD-friendly web app — no install required</div>
+    </div>
+    <div class="compliance-badge">
+      <div class="badge-label">Evidence base</div>
+      <div class="badge-val">Peer-reviewed guidelines, PDF summaries available</div>
+    </div>
+  </div>
+
+  <!-- Pilot -->
+  <div class="pilot-box">
+    <h3>Start with a free 30-day unit pilot</h3>
+    <p>We're offering a limited number of complimentary pilot licenses for ICU and ER units. Your team gets full access, and we'll configure the app to your unit's protocols at no charge — so you can evaluate it on your own terms before committing.</p>
+    <div class="pilot-steps">
+      <div class="pilot-step"><div class="step-num">1</div><span>Share your unit's vasopressor and sedation protocols (a PDF or email summary is fine)</span></div>
+      <div class="pilot-step"><div class="step-num">2</div><span>We configure the app to your protocols within 72 hours</span></div>
+      <div class="pilot-step"><div class="step-num">3</div><span>Your team uses it free for 30 days — no credit card, no commitment</span></div>
+      <div class="pilot-step"><div class="step-num">4</div><span>If your staff likes it, we'll send a simple per-seat licensing agreement</span></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>Ready to pilot it with your unit?</h3>
+    <p>Reach out directly — no sales process, no demos required.</p>
+    <div class="cta-contacts">
+      <a class="cta-link" href="https://www.vitalacuity.app">Visit vitalacuity.app</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-line">
+    <span>Designed by RNs &amp; RRTs &nbsp;·&nbsp; No ads &nbsp;·&nbsp; Cancel anytime</span>
+    <a href="https://www.vitalacuity.app">vitalacuity.app</a>
+  </div>
+
+</div>
+</body>
+</html>
