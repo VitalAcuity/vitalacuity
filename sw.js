@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vitalacuity-v3';   // Increase this version number when you make major changes
+const CACHE_NAME = 'vitalacuity-v4';   // Increase this version number when you make major changes. V4 includes admin function and improved IV tools.
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

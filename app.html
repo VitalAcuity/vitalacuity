@@ -12,55 +12,111 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-180.png">
-    <style>
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
-        
-        .gcs-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            min-height: 68px;
-            padding: 8px 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            border-radius: 16px;
-            font-weight: 500;
-        }
-        .gcs-btn .points {
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1;
-            color: #34d399;
-        }
-        .gcs-btn .label {
-            font-size: 13px;
-            line-height: 1.2;
-            text-align: center;
-            padding: 0 4px;
-        }
-        .gcs-btn.selected {
-            background-color: rgb(16 185 129);
-            color: white;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-        }
-        .gcs-btn.selected .points { color: white; }
+    
+<style>
+    body { 
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; 
+    }
 
-        .card {
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-        .result-box {
-            box-shadow: 0 20px 25px -5px rgb(16 185 129 / 0.15);
-        }
-        
-        input:focus, select:focus {
-            border-color: #34d399;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
-        }
-    </style>
+    /* ==================== LIGHT MODE - COMPLETE COVERAGE ==================== */
+    body.light,
+    body.light .bg-zinc-950 { 
+        background-color: #f8fafc !important; 
+    }
+
+    body.light .bg-zinc-900 { 
+        background-color: #ffffff !important; 
+        border-color: #e2e8f0 !important; 
+    }
+
+    /* All text dark in light mode */
+    body.light .text-white,
+    body.light .text-zinc-400,
+    body.light .text-emerald-300,
+    body.light .text-teal-400,
+    body.light .text-red-400,
+    body.light .text-zinc-300,
+    body.light .text-zinc-500,
+    body.light h2 {
+        color: #0f172a !important;
+    }
+
+    /* Form elements */
+    body.light input,
+    body.light select,
+    body.light option {
+        background-color: #ffffff !important;
+        border-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+
+    /* GCS BUTTONS */
+    body.light .gcs-btn {
+        background-color: #ffffff !important;
+        border-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+
+    body.light .gcs-btn.selected {
+        background-color: #10b981 !important;
+        color: white !important;
+    }
+
+    /* GCS RESET BUTTON */
+    body.light button.bg-zinc-700 {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+    }
+
+    /* EMERGENCY CATEGORY BUTTONS (ACLS/PALS/NRP) */
+    body.light #emergency button,
+    body.light button.flex-1.py-3.px-4.rounded-3xl.bg-zinc-800 {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* Drug detail boxes */
+    body.light details.bg-zinc-800,
+    body.light details {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    body.light details summary {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+    }
+
+    /* ETT result box */
+    body.light #ettResult {
+        background-color: #ffffff !important;
+        border-color: #e2e8f0 !important;
+        color: #0f172a !important;
+    }
+
+    /* Result boxes */
+    body.light .bg-emerald-950 { 
+        background-color: #ecfdf5 !important; 
+        border-color: #0f766e !important; 
+    }
+
+    body.light .bg-teal-700 { 
+        background-color: #0f766e !important; 
+    }
+
+    /* Keep header teal in both modes */
+    .bg-\\[\\#1b5d5b\\] { 
+        background-color: #1b5d5b !important; 
+    }
+
+    body.light .border-zinc-700 { 
+        border-color: #e2e8f0 !important; 
+    }
+</style>
+
 </head>
-<body class="bg-zinc-950 text-white min-h-screen pb-12">
+<body class="bg-zinc-950 text-white min-h-screen" id="app-body">
     <!-- UNLICENSED COPY WARNING BANNER -->
 <div id="unlicensedBanner" class="hidden fixed bottom-0 left-0 right-0 bg-orange-600 text-white text-center py-3 text-sm font-medium z-[9999] flex items-center justify-center gap-2 shadow-2xl">
     <span class="text-orange-200">⚠️</span>
@@ -87,19 +143,26 @@
     <!-- MOBILE CONTAINER -->
     <div class="max-w-md mx-auto bg-zinc-950 min-h-screen">
 
-                        <!-- FINAL REFINED HEADER -->
-        <div class="mx-4 mt-4 bg-[#1b5d5b] rounded-3xl px-6 py-5 flex items-center justify-center shadow-2xl">
-            <div class="flex items-center gap-3">
-                <img src="logo.png" 
-                alt="VitalAcuity Logo" 
-                class="h-16 w-auto">   <!-- Larger logo -->
-                
-                <h1 class="text-3xl font-bold tracking-[-1px] text-white" 
-                    style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                    VitalAcuity
-                </h1>
-            </div>
-        </div>
+                       <!-- FINAL REFINED HEADER WITH LIGHT/DARK TOGGLE -->
+<div class="mx-4 mt-4 bg-[#1b5d5b] rounded-3xl px-6 py-5 flex items-center justify-between shadow-2xl">
+    <!-- Left side: Logo + Name -->
+    <div class="flex items-center gap-3">
+        <img src="logo.png" 
+             alt="VitalAcuity Logo" 
+             class="h-16 w-auto">
+        
+        <h1 class="text-3xl font-bold tracking-[-1px] text-white"
+            style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            VitalAcuity
+        </h1>
+    </div>
+
+    <!-- Right side: Theme Toggle -->
+    <button onclick="toggleTheme()" id="themeToggle"
+            class="w-12 h-12 flex items-center justify-center text-3xl rounded-2xl bg-white/20 hover:bg-white/30 transition-colors">
+        🌙
+    </button>
+</div>
 
         <!-- MAIN CONTENT AREA -->
         <div class="p-4 pt-6">
@@ -141,6 +204,13 @@
                 <div class="text-teal-400 text-2xl font-semibold">Unit Converter</div>
                 <div class="text-zinc-400 text-sm mt-1">Metric ↔ Standard + within systems</div>
             </div>
+
+                        <!-- Hospital Admin Entry (only visible to admins) -->
+            <div onclick="openHospitalAdmin()" class="card bg-zinc-900 hover:bg-zinc-800 p-6 rounded-3xl cursor-pointer border border-amber-400/30 active:scale-[0.98] transition-all">
+                <div class="text-amber-400 text-2xl font-semibold">🏥 Hospital Admin</div>
+                <div class="text-zinc-400 text-sm mt-1">Set custom concentrations • Multi-user license</div>
+            </div>
+
         </div>
                                                <!-- IV TOOLS SUB-MENU - with Sedation Titration added -->
         <div id="iv" class="hidden p-6">
@@ -174,254 +244,231 @@
             </div>
         </div> 
 
-        <!-- ====================== SEDATION TITRATION HELPER ====================== -->
-        <div id="sedation" class="hidden">
-            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
-                <div class="flex items-center justify-between">
-                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
-                    <h2 class="text-3xl font-bold text-white">Sedation Titration</h2>
-                    <div class="w-12"></div>
-                </div>
+<!-- ====================== SEDATION TITRATION HELPER ====================== -->
+<div id="sedation" class="hidden">
+    <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+            <h2 class="text-3xl font-bold text-white">Sedation Titration</h2>
+            <div class="w-12"></div>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-6">
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Medication</label>
+            <select id="sedMed" onchange="updateSedMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                <option value="prop">Propofol</option>
+                <option value="dex">Dexmedetomidine</option>
+                <option value="mid">Midazolam</option>
+                <option value="fent">Fentanyl</option>
+                <option value="ket">Ketamine</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Standard Concentration</label>
+            <select id="sedConcSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Current Rate (mL/hr)</label>
+                <input id="sedCurrentRate" type="number" value="20" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
-
-            <div class="p-4 space-y-6">
-                <!-- Medication Selector -->
-                <div>
-                    <label class="block text-sm text-zinc-400 mb-2">Medication</label>
-                    <select id="sedMed" onchange="updateSedMed()" 
-                            class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400">
-                        <option value="prop">Propofol</option>
-                        <option value="mid">Midazolam</option>
-                        <option value="dex">Dexmedetomidine</option>
-                        <option value="fent">Fentanyl</option>
-                        <option value="ket">Ketamine</option>
-                    </select>
-                </div>
-
-                <!-- Current Rate + Patient Weight -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <label class="block text-sm text-zinc-400 mb-2">Current rate (mL/hr)</label>
-                        <input id="sedCurrentRate" type="number" value="20" 
-                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="block text-sm text-zinc-400 mb-2">Patient weight (kg)</label>
-                        <input id="sedWeight" type="number" value="80" 
-                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
-                    </div>
-                </div>
-
-                <!-- Current RASS + Target RASS -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <label class="block text-sm text-zinc-400 mb-2">Current RASS</label>
-                        <select id="currentRASS" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
-                            <option value="4">+4 Combative</option>
-                            <option value="3">+3 Very agitated</option>
-                            <option value="2">+2 Agitated</option>
-                            <option value="1">+1 Restless</option>
-                            <option value="0" selected>0 Alert and calm</option>
-                            <option value="-1">-1 Drowsy</option>
-                            <option value="-2">-2 Light sedation</option>
-                            <option value="-3">-3 Moderate sedation</option>
-                            <option value="-4">-4 Deep sedation</option>
-                            <option value="-5">-5 Unarousable</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="block text-sm text-zinc-400 mb-2">Target RASS</label>
-                        <select id="targetRASS" class="flex-1 bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
-                            <option value="4">+4 Combative</option>
-                            <option value="3">+3 Very agitated</option>
-                            <option value="2">+2 Agitated</option>
-                            <option value="1">+1 Restless</option>
-                            <option value="0" selected>0 Alert and calm</option>
-                            <option value="-1">-1 Drowsy</option>
-                            <option value="-2">-2 Light sedation</option>
-                            <option value="-3">-3 Moderate sedation</option>
-                            <option value="-4">-4 Deep sedation</option>
-                            <option value="-5">-5 Unarousable</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Calculate Button -->
-                <button onclick="calcSedationTitration()" 
-                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-semibold active:scale-95 transition-all">
-                    Calculate New Rate
-                </button>
-
-                <!-- Result -->
-                <div id="sedResult" class="hidden bg-zinc-800 rounded-3xl p-6 text-center">
-                    <div id="sedNewRate" class="text-teal-400 text-7xl font-semibold"></div>
-                    <div id="sedLabel" class="text-xl mt-2"></div>
-                    <div id="sedExplanation" class="text-sm text-zinc-400 mt-4"></div>
-                    <div class="text-xs text-amber-400 mt-6">
-                        ⚠️ These are suggestions only. Use clinical judgment.<br>
-                        Reassess RASS frequently • Titrate to lowest effective dose
-                    </div>
-                </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Patient Weight (kg)</label>
+                <input id="sedWeight" type="number" value="80" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
         </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Current RASS</label>
+                <select id="currentRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                    <option value="4">+4 Combative</option>
+                    <option value="3">+3 Very agitated</option>
+                    <option value="2">+2 Agitated</option>
+                    <option value="1">+1 Restless</option>
+                    <option value="0" selected>0 Alert and calm</option>
+                    <option value="-1">-1 Drowsy</option>
+                    <option value="-2">-2 Light sedation</option>
+                    <option value="-3">-3 Moderate sedation</option>
+                    <option value="-4">-4 Deep sedation</option>
+                    <option value="-5">-5 Unarousable</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Target RASS</label>
+                <select id="targetRASS" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                    <option value="4">+4 Combative</option>
+                    <option value="3">+3 Very agitated</option>
+                    <option value="2">+2 Agitated</option>
+                    <option value="1">+1 Restless</option>
+                    <option value="0">0 Alert and calm</option>
+                    <option value="-1">-1 Drowsy</option>
+                    <option value="-2" selected>-2 Light sedation</option>
+                    <option value="-3">-3 Moderate sedation</option>
+                    <option value="-4">-4 Deep sedation</option>
+                    <option value="-5">-5 Unarousable</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="calcSedationTitration()" class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+            Calculate New Rate
+        </button>
+
+        <div id="sedResult" class="hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
+            <div id="sedNewRate" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
+            <div id="sedLabel" class="text-2xl text-emerald-300 mt-4"></div>
+            <div id="sedExplanation" class="text-sm text-zinc-400 mt-6"></div>
+        </div>
+    </div>
+
+    <p class="text-center text-xs text-zinc-500 mt-6 px-4">
+        Based on ASHP Standardize 4 Safety concentrations • Always verify with your hospital pharmacy
+    </p>
+</div>  
             
-        <!-- ====================== VASOPRESSOR TITRATION HELPER ====================== -->
-        <div id="vaso" class="hidden">
-            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
-                <div class="flex items-center justify-between">
-                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
-                    <h2 class="text-3xl font-bold text-white">Vasopressor Titration</h2>
-                    <div class="w-12"></div>
-                </div>
+<!-- ====================== VASOPRESSOR TITRATION HELPER ====================== -->
+<div id="vaso" class="hidden">
+    <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+            <h2 class="text-3xl font-bold text-white">Vasopressor Titration</h2>
+            <div class="w-12"></div>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-6">
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Medication</label>
+            <select id="vasoMed" onchange="updateVasoMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                <option value="norepi">Norepinephrine (first-line)</option>
+                <option value="epi">Epinephrine</option>
+                <option value="dopa">Dopamine</option>
+                <option value="dobu">Dobutamine</option>
+                <option value="vaso">Vasopressin</option>
+                <option value="mil">Milrinone</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Standard Concentration</label>
+            <select id="vasoConcSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Current Rate (mL/hr)</label>
+                <input id="currentRate" type="number" value="10" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
-
-            <div class="p-4 space-y-6">
-                <!-- Medication Selector -->
-                <select id="vasoMed" onchange="updateVasoMed()" 
-                        class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
-                    <option value="norepi">Norepinephrine (first-line)</option>
-                    <option value="epi">Epinephrine</option>
-                    <option value="dopa">Dopamine</option>
-                    <option value="dobu">Dobutamine</option>
-                </select>
-
-                <!-- Current Rate + Patient Weight - Fixed alignment -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-zinc-400 text-sm block mb-2">Current rate (mL/hr)</label>
-                        <input id="currentRate" type="number" value="10" 
-                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                    </div>
-                    <div>
-                        <label class="text-zinc-400 text-sm block mb-2">Patient weight (kg)</label>
-                        <input id="patientWeight" type="number" value="80" 
-                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                    </div>
-                </div>
-
-                <!-- Change Type -->
-                <select id="vasoChange" onchange="toggleMAPInput()" 
-                        class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
-                    <option value="increase005">Increase by 0.05 mcg/kg/min</option>
-                    <option value="increase01">Increase by 0.1 mcg/kg/min</option>
-                    <option value="decrease005">Decrease by 0.05 mcg/kg/min</option>
-                    <option value="decrease01">Decrease by 0.1 mcg/kg/min</option>
-                    <option value="targetMAP" selected>Target MAP (Conservative / Moderate / Aggressive)</option>
-                </select>
-
-                <!-- MAP Inputs -->
-                <div id="mapInputGroup" class="space-y-4">
-                    <div>
-                        <label class="text-zinc-400 text-sm block mb-2">Current MAP (mmHg) — arterial line</label>
-                        <input id="currentMAP" type="number" value="58" 
-                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                    </div>
-                    <div>
-                        <label class="text-zinc-400 text-sm block mb-2">Target MAP (mmHg)</label>
-                        <input id="targetMAP" type="number" value="65" 
-                               class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl focus:outline-none focus:border-emerald-400">
-                    </div>
-                    <div>
-                        <label class="text-zinc-400 text-sm block mb-2">Titration Intensity</label>
-                        <select id="titrationIntensity" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-xl focus:outline-none focus:border-emerald-400">
-                            <option value="conservative">Conservative (safest, smallest steps)</option>
-                            <option value="moderate" selected>Moderate (standard)</option>
-                            <option value="aggressive">Aggressive (for refractory shock)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Calculate Button -->
-                <button onclick="calcVasoTitration()" 
-                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-semibold transition-all active:scale-[0.98]">
-                    Calculate New Rate
-                </button>
-
-                <!-- Result -->
-                <div id="vasoResult" class="hidden bg-zinc-800 rounded-3xl p-6 text-center">
-                    <div id="vasoNewRate" class="text-teal-400 text-7xl font-semibold"></div>
-                    <div id="vasoLabel" class="text-xl mt-2"></div>
-                    <div id="vasoExplanation" class="text-sm text-zinc-400 mt-4"></div>
-                    <div class="text-xs text-amber-400 mt-6">
-                        ⚠️ These are suggestions only. Always use clinical judgment.<br>
-                        Reassess frequently with arterial line • Titrate to lowest effective dose
-                    </div>
-                </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Patient Weight (kg)</label>
+                <input id="vasoWeight" type="number" value="80" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
-        </div>                                         
+        </div>
 
-               <!-- ====================== IV MEDICATION CALCULATOR ====================== -->
-        <div id="convert" class="hidden">
-            <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
-                <div class="flex items-center justify-between">
-                    <button onclick="back()" class="text-5xl text-emerald-400 leading-none">←</button>
-                    <h2 class="text-3xl font-bold text-white">IV Med Calculator</h2>
-                    <div class="w-12"></div>
-                </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Current MAP (mmHg)</label>
+                <input id="currentMAP" type="number" value="58" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
-
-            <div class="p-4 space-y-6">
-                <!-- Medication Selector -->
-                <div>
-                    <label class="block text-sm text-zinc-400 mb-2">Medication</label>
-                    <select id="medSelect" onchange="updateMed()" 
-                            class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-emerald-400">
-                        <option value="norepi">Norepinephrine – mcg/kg/min</option>
-                        <option value="epi">Epinephrine – mcg/kg/min</option>
-                        <option value="dopa">Dopamine – mcg/kg/min</option>
-                        <option value="dobu">Dobutamine – mcg/kg/min</option>
-                        <option value="vaso">Vasopressin – units/min</option>
-                        <option value="mil">Milrinone – mcg/kg/min</option>
-                        <option value="ntg">Nitroglycerin – mcg/min</option>
-                        <option value="ntp">Nitroprusside – mcg/kg/min</option>
-                        <option value="prop">Propofol – mcg/kg/min (sedation)</option>
-                        <option value="mid">Midazolam – mg/hr</option>
-                        <option value="fent">Fentanyl – mcg/hr</option>
-                        <option value="dex">Dexmedetomidine – mcg/kg/hr</option>
-                        <option value="ket">Ketamine – mg/kg/hr</option>
-                        <option value="roc">Rocuronium – mcg/kg/min (paralytic)</option>
-                        <option value="cis">Cisatracurium – mcg/kg/min (paralytic)</option>
-                    </select>
-                </div>
-
-                <!-- Desired Dose + Patient Weight - FIXED & ALIGNED -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="flex flex-col">
-                        <label id="doseLabel" class="block text-sm text-zinc-400 mb-2">Desired Dose<br> (mcg/kg/min)</label>
-                        <input id="dose" type="number" step="0.01" value="0.1" 
-                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="block text-sm text-zinc-400 mb-2">Patient Weight<br>(kg)</label>
-                        <input id="weight" type="number" value="80" 
-                               class="flex-1 bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-2xl text-center focus:outline-none focus:border-emerald-400">
-                    </div>
-                </div>
-
-                <!-- Concentration -->
-                <div>
-                    <label class="block text-sm text-zinc-400 mb-2">Concentration (standard)</label>
-                    <input id="conc" type="text" readonly 
-                           class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-lg text-center">
-                </div>
-
-                <!-- Calculate Button -->
-                <button onclick="calcMedDrip()" 
-                        class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
-                    Calculate mL/hr
-                </button>
-
-                <!-- Result -->
-                <div id="medResult" class="result-box hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
-                    <div id="rateDisplay" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
-                    <div id="rateLabel" class="text-2xl text-emerald-300 mt-4"></div>
-                </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Target MAP (mmHg)</label>
+                <input id="targetMAP" type="number" value="75" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
             </div>
+        </div>
 
-            <p class="text-center text-xs text-zinc-500 mt-10 px-4">
-                Reference only • Always verify exact bag concentration and hospital protocol
-            </p>
-        </div>                 
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Titration Intensity</label>
+            <select id="titrationIntensity" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                <option value="conservative">Conservative (safest, smallest steps)</option>
+                <option value="moderate" selected>Moderate (standard)</option>
+                <option value="aggressive">Aggressive (for refractory shock)</option>
+            </select>
+        </div>
+
+        <button onclick="calcVasoTitration()" class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+            Calculate New Rate
+        </button>
+
+        <div id="vasoResult" class="hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
+            <div id="vasoNewRate" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
+            <div id="vasoLabel" class="text-2xl text-emerald-300 mt-4"></div>
+            <div id="vasoExplanation" class="text-sm text-zinc-400 mt-6"></div>
+        </div>
+    </div>
+
+    <p class="text-center text-xs text-zinc-500 mt-6 px-4">
+        Based on ASHP Standardize 4 Safety concentrations • Always verify with your hospital pharmacy
+    </p>
+</div>                                               
+
+        <!-- ====================== IV MEDICATION CALCULATOR ====================== -->
+<div id="convert" class="hidden">
+    <div class="bg-zinc-900 rounded-3xl p-6 mb-6">
+        <div class="flex items-center justify-between">
+            <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+            <h2 class="text-3xl font-bold text-white">IV Med Calculator</h2>
+            <div class="w-12"></div>
+        </div>
+    </div>
+
+    <div class="p-4 space-y-6">
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Medication</label>
+            <select id="medSelect" onchange="updateMed()" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400">
+                <option value="norepi">Norepinephrine – mcg/kg/min</option>
+                <option value="epi">Epinephrine – mcg/kg/min</option>
+                <option value="dopa">Dopamine – mcg/kg/min</option>
+                <option value="dobu">Dobutamine – mcg/kg/min</option>
+                <option value="vaso">Vasopressin – units/min</option>
+                <option value="mil">Milrinone – mcg/kg/min</option>
+                <option value="ntg">Nitroglycerin – mcg/min</option>
+                <option value="ntp">Nitroprusside – mcg/kg/min</option>
+                <option value="prop">Propofol – mcg/kg/min</option>
+                <option value="mid">Midazolam – mg/hr</option>
+                <option value="fent">Fentanyl – mcg/hr</option>
+                <option value="dex">Dexmedetomidine – mcg/kg/hr</option>
+                <option value="ket">Ketamine – mg/kg/hr</option>
+                <option value="roc">Rocuronium – mcg/kg/min</option>
+                <option value="cis">Cisatracurium – mcg/kg/min</option>
+            </select>
+        </div>
+
+        <!-- Standard Concentration Dropdown -->
+        <div>
+            <label class="block text-sm text-zinc-400 mb-2">Concentration (standard hospital premix)</label>
+            <select id="concSelect" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl p-5 text-lg focus:outline-none focus:border-teal-400"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2" id="doseLabel">Desired Dose</label>
+                <input id="dose" type="number" value="0.1" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
+            </div>
+            <div>
+                <label class="block text-sm text-zinc-400 mb-2">Patient Weight (kg)</label>
+                <input id="weight" type="number" value="80" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4 text-3xl text-center">
+            </div>
+        </div>
+
+        <button onclick="calcMedDrip()" class="w-full bg-teal-700 hover:bg-teal-600 py-6 rounded-3xl text-2xl font-bold active:scale-95 transition-all">
+            Calculate mL/hr
+        </button>
+
+        <div id="medResult" class="hidden bg-emerald-950 border border-teal-400/30 rounded-3xl p-10 text-center">
+            <div id="rateDisplay" class="text-[5.5rem] font-black text-teal-400 leading-none"></div>
+            <div id="rateLabel" class="text-2xl text-emerald-300 mt-4"></div>
+        </div>
+    </div>
+
+    <p class="text-center text-xs text-zinc-500 mt-6 px-4">
+        Based on ASHP Standardize 4 Safety concentrations • Always verify with your hospital pharmacy
+    </p>
+</div>        
 
         <!-- IV Drip Rate Calculator -->
         <div id="drip" class="hidden">
@@ -716,16 +763,28 @@
                         <button onclick="updateGCS('eye', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3"><div class="points">1</div><div class="label">None</div></button>
                     </div>
                 </div>
-                <div>
-                    <div class="text-teal-400 text-lg font-medium mb-4">Verbal Response</div>
-                    <div class="grid grid-cols-3 gap-3" id="verbalButtons">
-                        <button onclick="updateGCS('verbal', 5)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">5</div><div class="label">Oriented</div></button>
-                        <button onclick="updateGCS('verbal', 4)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">4</div><div class="label">Confused</div></button>
-                        <button onclick="updateGCS('verbal', 3)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">3</div><div class="label">Inappropriate</div></button>
-                        <button onclick="updateGCS('verbal', 2)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"><div class="points">2</div><div class="label">Incomprehensible</div></button>
-                        <button onclick="updateGCS('verbal', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3"><div class="points">1</div><div class="label">None</div></button>
-                    </div>
-                </div>
+                <!-- Verbal Response -->
+<div>
+    <div class="text-teal-400 text-lg font-medium mb-4">Verbal Response</div>
+    <div class="grid grid-cols-3 gap-3" id="verbalButtons">
+        <button onclick="updateGCS('verbal', 5)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700">
+            <div class="points">5</div><div class="label">Oriented</div>
+        </button>
+        <button onclick="updateGCS('verbal', 4)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700">
+            <div class="points">4</div><div class="label">Confused</div>
+        </button>
+        <button onclick="updateGCS('verbal', 3)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700">
+            <div class="points">3</div><div class="label">Inappropriate</div>
+        </button>
+        <!-- Wider button for the long word -->
+        <button onclick="updateGCS('verbal', 2)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-2">
+            <div class="points">2</div><div class="label">Incomprehensible</div>
+        </button>
+        <button onclick="updateGCS('verbal', 1)" class="gcs-btn bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 col-span-3">
+            <div class="points">1</div><div class="label">None</div>
+        </button>
+    </div>
+</div>
                 <div>
                     <div class="text-teal-400 text-lg font-medium mb-4">Motor Response</div>
                     <div class="grid grid-cols-3 gap-3" id="motorButtons">
@@ -952,6 +1011,52 @@
         <button onclick="resetIBW()" class="w-full text-zinc-400 py-3 text-sm">Reset</button>
     </div>
 </div>
+
+        <!-- ====================== HOSPITAL ADMIN & FORMULARY SCREENS ====================== -->
+
+        <!-- Hospital Admin Setup (Protected) -->
+        <div id="hospital-admin" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                <h2 class="text-3xl font-bold text-white">Hospital Formulary Setup</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-6 space-y-6">
+                <div class="text-center mb-4">
+                    <div class="text-teal-400 text-xl font-semibold">Configure Your Hospital’s Concentrations</div>
+                    <p class="text-zinc-400 text-sm">Only administrators should use this screen</p>
+                </div>
+                <div id="adminFormularyForm" class="space-y-8"></div>
+                <button onclick="saveHospitalFormulary()" 
+                        class="w-full bg-teal-600 hover:bg-teal-500 py-5 rounded-3xl text-xl font-semibold active:scale-95">
+                    Save & Activate Hospital Formulary
+                </button>
+            </div>
+        </div>
+
+        <!-- Staff Import Formulary Screen (Mandatory Lock) -->
+        <div id="import-formulary" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                <h2 class="text-3xl font-bold text-white">Hospital Formulary Required</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-8 text-center space-y-6">
+                <div class="text-amber-400 text-6xl">🏥</div>
+                <h3 class="text-2xl font-semibold">Multi-User Hospital License Detected</h3>
+                <p class="text-zinc-400">You must import your department’s official formulary before using the IV Medication, Sedation Titration, or Vasopressor Titration tools.</p>
+                
+                <input id="hospitalCodeInput" type="text" placeholder="Enter Hospital Code (e.g. HOSP-7X9K-2P4M)" 
+                       class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-center text-lg focus:outline-none focus:border-teal-400">
+                
+                <button onclick="importHospitalFormulary()" 
+                        class="w-full bg-teal-600 hover:bg-teal-500 py-5 rounded-3xl text-xl font-semibold">
+                    Import Hospital Formulary
+                </button>
+                
+                <p class="text-xs text-zinc-500">Ask your charge nurse or educator for the code / QR code.</p>
+            </div>
+        </div>
         
                      <!-- ====================== PAYWALL SCREEN ====================== -->
         <div id="paywall" class="hidden min-h-screen bg-zinc-950 flex items-center justify-center p-6">
@@ -1031,6 +1136,56 @@
                 </div>
             </div>
         </div>   
+
+                <!-- ====================== HOSPITAL ADMIN & IMPORT SCREENS ====================== -->
+
+        <!-- Hospital Admin Setup (Protected) -->
+        <div id="hospital-admin" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                <h2 class="text-3xl font-bold text-white">Hospital Admin</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-6 space-y-6">
+                <div class="text-center">
+                    <div class="text-teal-400 text-xl font-semibold">Set Hospital Formulary</div>
+                    <p class="text-zinc-400 text-sm mt-1">Enter your pharmacy's exact concentrations</p>
+                </div>
+
+                <div id="adminFormularyForm" class="space-y-8">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <button onclick="saveHospitalFormulary()" 
+                        class="w-full bg-teal-600 hover:bg-teal-500 py-5 rounded-3xl text-xl font-semibold">
+                    Save & Activate Hospital Formulary
+                </button>
+            </div>
+        </div>
+
+        <!-- Staff Import Formulary Screen -->
+        <div id="import-formulary" class="hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="back()" class="text-5xl text-teal-400 leading-none">←</button>
+                <h2 class="text-3xl font-bold text-white">Import Hospital Formulary</h2>
+                <div class="w-12"></div>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-8 text-center">
+                <div class="text-amber-400 text-6xl mb-4">🏥</div>
+                <h3 class="text-2xl font-semibold mb-2">Hospital Formulary Required</h3>
+                <p class="text-zinc-400 mb-8">This device is under a multi-user hospital license.<br>You must import your department’s official formulary before using the IV, Sedation, or Vasopressor tools.</p>
+                
+                <input id="hospitalCodeInput" type="text" placeholder="Enter Hospital Code (e.g. HOSP-7X9K-2P4M)" 
+                       class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-center text-lg mb-4 focus:outline-none focus:border-teal-400">
+                
+                <button onclick="importHospitalFormulary()" 
+                        class="w-full bg-teal-600 hover:bg-teal-500 py-5 rounded-3xl text-xl font-semibold mb-3">
+                    Import Formulary
+                </button>
+                
+                <p class="text-xs text-zinc-500">Or ask your charge nurse / educator for the code or QR code.</p>
+            </div>
+        </div>
 
     <script>
             
@@ -1138,6 +1293,37 @@
             document.getElementById('paywall').classList.remove('hidden');
         }       
        
+        // ====================== LIGHT/DARK MODE TOGGLE (FINAL VERSION) ======================
+function toggleTheme() {
+    const body = document.getElementById('app-body');
+    const toggle = document.getElementById('themeToggle');
+    
+    if (body.classList.contains('light')) {
+        body.classList.remove('light');
+        localStorage.setItem('theme', 'dark');
+        toggle.innerHTML = '🌙';
+    } else {
+        body.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        toggle.innerHTML = '☀️';
+    }
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const body = document.getElementById('app-body');
+    const toggle = document.getElementById('themeToggle');
+    
+    if (savedTheme === 'light') {
+        body.classList.add('light');
+        if (toggle) toggle.innerHTML = '☀️';
+    } else {
+        body.classList.remove('light');
+        if (toggle) toggle.innerHTML = '🌙';
+    }
+}
+
+   
 
         function back() {
             // IV Tools group
@@ -1165,20 +1351,170 @@
             }
         }
 
-        function navigate(screen) {
-    // Enforce license check on EVERY navigation (this is the strong one)
-    enforceLicenseCheck();
 
-    // Hide EVERY possible screen to prevent ghosting
-    document.querySelectorAll('#home, #iv, #intubation, #rsi, #ett, #ibw, #abg, #gcs, #rass, #units, #drip, #emergency, #convert, #vaso, #sedation').forEach(d => {
-        if (d) d.classList.add('hidden');
-    });
+    // =================================================================== HOSPITAL FORMULARY SYSTEM ===================================================
+   
+    let hospitalFormulary = null;
 
-    const target = document.getElementById(screen);
-    if (target) {
-        target.classList.remove('hidden');
-    } 
-}
+    function loadHospitalFormulary() {
+        const saved = localStorage.getItem('hospitalFormulary');
+        if (saved) hospitalFormulary = JSON.parse(saved);
+    }
+
+    function isHospitalMode() {
+        return hospitalFormulary !== null;
+    }
+
+    function checkMandatoryFormulary(screen) {
+        // Always reload fresh from localStorage on every check
+        loadHospitalFormulary();
+        
+        const criticalTools = ['convert', 'iv', 'sedation', 'vaso'];
+        const isHospitalLicense = localStorage.getItem('hospitalLicenseActive') === 'true';
+
+        console.log(`🔍 checkMandatoryFormulary("${screen}") → hospitalLicenseActive=${isHospitalLicense}, formulary exists=${!!hospitalFormulary}`);
+
+        if (!isHospitalLicense || !criticalTools.includes(screen)) {
+            return true; // allow normal navigation
+        }
+
+        if (!hospitalFormulary) {
+            console.log(`🚨 CRITICAL: Hospital license active but no formulary loaded → forcing import screen`);
+            // Force show import screen
+            document.querySelectorAll('div[id]').forEach(div => div.classList.add('hidden'));
+            const importScreen = document.getElementById('import-formulary');
+            if (importScreen) importScreen.classList.remove('hidden');
+            return false;
+        }
+
+        return true;
+    }
+
+    function openHospitalAdmin() {
+        const pin = prompt("Enter Admin PIN to access Hospital Formulary Settings (default: 1234):");
+        if (pin !== "1234") {
+            alert("Incorrect PIN.");
+            return;
+        }
+        navigate('hospital-admin');
+        renderAdminFormularyForm();
+    }
+
+    function renderAdminFormularyForm() {
+        const container = document.getElementById('adminFormularyForm');
+        const defaults = hospitalFormulary || {
+            norepi: 16, epi: 20, dopa: 1600, dobu: 2000, vaso: 0.2,
+            mil: 200, ntg: 200, ntp: 200, prop: 10, mid: 1,
+            fent: 10, dex: 4, ket: 1
+        };
+
+        container.innerHTML = `
+            <div class="grid grid-cols-2 gap-6 text-sm">
+                <div><label class="block text-zinc-400 mb-1">Norepinephrine (mcg/mL)</label><input id="admin-norepi" type="text" value="${defaults.norepi}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Epinephrine (mcg/mL)</label><input id="admin-epi" type="text" value="${defaults.epi}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Dopamine (mcg/mL)</label><input id="admin-dopa" type="text" value="${defaults.dopa}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Dobutamine (mcg/mL)</label><input id="admin-dobu" type="text" value="${defaults.dobu}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Vasopressin (units/mL)</label><input id="admin-vaso" type="text" value="${defaults.vaso}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Propofol (mg/mL)</label><input id="admin-prop" type="text" value="${defaults.prop}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Midazolam (mg/mL)</label><input id="admin-mid" type="text" value="${defaults.mid}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Fentanyl (mcg/mL)</label><input id="admin-fent" type="text" value="${defaults.fent}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Dexmedetomidine (mcg/mL)</label><input id="admin-dex" type="text" value="${defaults.dex}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+                <div><label class="block text-zinc-400 mb-1">Ketamine (mg/mL)</label><input id="admin-ket" type="text" value="${defaults.ket}" class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-4 py-3 text-center"></div>
+            </div>
+        `;
+    }
+
+    function saveHospitalFormulary() {
+        hospitalFormulary = {
+            norepi: parseFloat(document.getElementById('admin-norepi').value) || 16,
+            epi: parseFloat(document.getElementById('admin-epi').value) || 20,
+            dopa: parseFloat(document.getElementById('admin-dopa').value) || 1600,
+            dobu: parseFloat(document.getElementById('admin-dobu').value) || 2000,
+            vaso: parseFloat(document.getElementById('admin-vaso').value) || 0.2,
+            prop: parseFloat(document.getElementById('admin-prop').value) || 10,
+            mid: parseFloat(document.getElementById('admin-mid').value) || 1,
+            fent: parseFloat(document.getElementById('admin-fent').value) || 10,
+            dex: parseFloat(document.getElementById('admin-dex').value) || 4,
+            ket: parseFloat(document.getElementById('admin-ket').value) || 1
+        };
+
+        localStorage.setItem('hospitalFormulary', JSON.stringify(hospitalFormulary));
+        localStorage.setItem('hospitalLicenseActive', 'true');
+
+        // Create a shareable code with full data
+        const encoded = btoa(JSON.stringify(hospitalFormulary));
+        const code = "HOSP-" + encoded;
+
+        alert(`✅ Hospital Formulary SAVED and ACTIVATED!\n\nGive this code to your staff:\n\n${code}\n\nThey can copy and paste the entire code into the Import Formulary screen on any device.`);
+
+        updateMed();
+        updateSedMed();
+        updateVasoMed();
+
+        back();
+    }
+
+      function importHospitalFormulary() {
+        const code = document.getElementById('hospitalCodeInput').value.trim();
+        
+        if (!code) {
+            alert("Please enter the hospital code.");
+            return;
+        }
+
+        let cleanCode = code;
+        if (cleanCode.startsWith("HOSP-")) cleanCode = cleanCode.substring(5);
+
+        try {
+            const decoded = atob(cleanCode);
+            hospitalFormulary = JSON.parse(decoded);
+
+            localStorage.setItem('hospitalFormulary', JSON.stringify(hospitalFormulary));
+            localStorage.setItem('hospitalLicenseActive', 'true');
+
+            alert("✅ Hospital formulary imported successfully!\n\nThe app will now refresh to apply your hospital's concentrations.");
+
+            // Full page refresh - this is the most reliable way
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
+
+        } catch (e) {
+            alert("Invalid or incomplete hospital code.\n\nPlease copy the entire code exactly as provided by your administrator.");
+        }
+    }  
+    
+ //=============================================== navigation ============================================================    
+  
+    function navigate(screen) {
+        console.log(`🚦 NAVIGATE called with screen: "${screen}"`);
+
+        enforceLicenseCheck();
+
+        if (!checkMandatoryFormulary(screen)) {
+            return;
+        }
+
+        console.log(`✅ Allowed navigation to "${screen}"`);
+
+        // Hide all screens
+        document.querySelectorAll('#home, #iv, #intubation, #rsi, #ett, #ibw, #abg, #gcs, #rass, #units, #drip, #emergency, #convert, #vaso, #sedation, #hospital-admin, #import-formulary').forEach(d => {
+            if (d) d.classList.add('hidden');
+        });
+
+        const target = document.getElementById(screen);
+        if (target) target.classList.remove('hidden');
+    }
+
+
+    function getDefaultConcOptions(med) {
+        const map = {
+            norepi: [16,32,128], epi:[20,40], dopa:[1600,3200], dobu:[2000,4000],
+            vaso:[0.2,1], mil:[200], ntg:[200,400], ntp:[200,500],
+            prop:[10], mid:[1,5], fent:[10,50], dex:[4], ket:[1,2]
+        };
+        return map[med] || [16];
+    }
 
         function showEmergencySub(sub) {
             document.querySelectorAll('.emergency-sub').forEach(el => el.classList.add('hidden'));
@@ -1382,209 +1718,273 @@
             document.getElementById('dripResult').classList.remove('hidden');
         }
 
-        let currentSedMed = "prop";   // default
+        
+
+
+
+// ================== IV Med Calc Here ================================================
+// ====================== IV MEDICATION CALCULATOR - FINAL SAFE VERSION ======================
+const concMap = {
+    norepi: [16, 32, 128],
+    epi: [20, 40],
+    dopa: [1600, 3200],
+    dobu: [2000, 4000],
+    vaso: [0.2, 1],
+    mil: [200],
+    ntg: [200, 400],
+    ntp: [200, 500],
+    prop: [10],
+    mid: [1, 5],
+    fent: [10, 50],
+    dex: [4],
+    ket: [1, 2],
+    roc: [10],
+    cis: [2]
+};
+
+function updateMed() {
+        currentMed = document.getElementById('medSelect').value;
+        const concSelect = document.getElementById('concSelect');
+        const doseLabel = document.getElementById('doseLabel');
+
+        // Use hospital formulary if set, otherwise defaults
+        let concOptions = hospitalFormulary && hospitalFormulary[currentMed] !== undefined 
+            ? [hospitalFormulary[currentMed]] 
+            : getDefaultConcOptions(currentMed);
+
+        concSelect.innerHTML = '';
+        concOptions.forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            if (['prop','mid','ket','roc','cis'].includes(currentMed)) {
+                option.textContent = val + " mg/mL";
+            } else if (currentMed === 'vaso') {
+                option.textContent = val + " units/mL";
+            } else {
+                option.textContent = val + " mcg/mL";
+            }
+            concSelect.appendChild(option);
+        });
+
+        // Lock dropdown when hospital formulary is active
+        concSelect.disabled = isHospitalMode();
+        if (isHospitalMode()) concSelect.title = "Hospital formulary locked";
+
+        // Update dose label
+        switch(currentMed) {
+            case "vaso": doseLabel.textContent = "Desired Dose (units/min)"; break;
+            case "mid": doseLabel.textContent = "Desired Dose (mg/hr)"; break;
+            case "fent": doseLabel.textContent = "Desired Dose (mcg/hr)"; break;
+            default: doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
+        }
+    }
+
+    function calcMedDrip() {
+        console.log("🚀 calcMedDrip started");
+
+        const med = currentMed;
+        const dose = parseFloat(document.getElementById('dose').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const concSelect = document.getElementById('concSelect');
+        const conc = parseFloat(concSelect.value);
+
+        console.log(`Values read: med=${med}, dose=${dose}, weight=${weight}, conc=${conc}`);
+
+        if (isNaN(dose) || isNaN(weight) || isNaN(conc) || conc <= 0) {
+            alert("Please enter valid dose and weight, and ensure concentration is set.");
+            return;
+        }
+
+        let infusionRateMcgPerMin = 0;
+        if (med === 'vaso' || med === 'ntg') {
+            infusionRateMcgPerMin = dose;
+        } else if (med === 'mid' || med === 'fent') {
+            infusionRateMcgPerMin = dose;
+        } else if (med === 'ket') {
+            infusionRateMcgPerMin = (dose * weight * 1000) / 60;
+        } else {
+            infusionRateMcgPerMin = dose * weight;
+        }
+
+        let concMcgPerMl = conc;
+        if (['prop','mid','ket','roc','cis'].includes(med)) concMcgPerMl *= 1000;
+
+        let mlPerHr = 0;
+        if (med === 'mid' || med === 'fent') {
+            mlPerHr = infusionRateMcgPerMin / concMcgPerMl;
+        } else {
+            mlPerHr = (infusionRateMcgPerMin * 60) / concMcgPerMl;
+        }
+
+        mlPerHr = Math.max(0, Math.round(mlPerHr * 10) / 10);
+
+        document.getElementById('rateDisplay').textContent = mlPerHr;
+        document.getElementById('rateLabel').innerHTML = `mL/hr<br><span class="text-lg">for ${dose} ${document.getElementById('doseLabel').textContent} (${weight} kg @ ${conc} ${['prop','mid','ket','roc','cis'].includes(med) ? 'mg/mL' : med === 'vaso' ? 'units/mL' : 'mcg/mL'})</span>`;
+        document.getElementById('medResult').classList.remove('hidden');
+
+        console.log(`✅ calcMedDrip finished with result: ${mlPerHr}`);
+    }
+  
+
+// ========= Vaso Titration - Updated concentrations (0.2 units/mL is the most common hospital premix) ==========================
+
+const vasoConcMap = {
+    norepi: [16, 32, 128],
+    epi: [20, 40],
+    dopa: [1600, 3200],
+    dobu: [2000, 4000],
+    vaso: [0.2, 1],          // 0.2 is standard
+    mil: [200]
+};
+
+    function updateVasoMed() {
+        currentVasoMed = document.getElementById('vasoMed').value;
+        const concSelect = document.getElementById('vasoConcSelect');
+
+        // Use hospital formulary if available
+        let concOptions = hospitalFormulary && hospitalFormulary[currentVasoMed] !== undefined 
+            ? [hospitalFormulary[currentVasoMed]] 
+            : getDefaultConcOptions(currentVasoMed);
+
+        concSelect.innerHTML = '';
+        concOptions.forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            option.textContent = val + (currentVasoMed === 'vaso' ? " units/mL" : " mcg/mL");
+            concSelect.appendChild(option);
+        });
+
+        // Lock dropdown when hospital formulary is active
+        concSelect.disabled = isHospitalMode();
+        if (isHospitalMode()) concSelect.title = "Hospital formulary locked";
+    }
+
+    // 3. Vasopressor Titration
+    function calcVasoTitration() {
+        console.log("🚀 calcVasoTitration started");
+
+        const currentRate = parseFloat(document.getElementById('currentRate').value);
+        const weight = parseFloat(document.getElementById('vasoWeight').value);
+        const conc = parseFloat(document.getElementById('vasoConcSelect').value);
+        const currentMAP = parseFloat(document.getElementById('currentMAP').value);
+        const targetMAP = parseFloat(document.getElementById('targetMAP').value);
+        const intensity = document.getElementById('titrationIntensity').value;
+
+        console.log(`Values: rate=${currentRate}, weight=${weight}, conc=${conc}, MAP ${currentMAP}→${targetMAP}`);
+
+        if (isNaN(currentRate) || isNaN(weight) || isNaN(conc) || isNaN(currentMAP) || isNaN(targetMAP)) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        const deltaMAP = targetMAP - currentMAP;
+        let stepSize = (intensity === "conservative") ? 2 : (intensity === "moderate") ? 4 : 8;
+        let rateChange = (deltaMAP / 5) * stepSize;
+
+        if (rateChange > 20) rateChange = 20;
+        if (rateChange < -20) rateChange = -20;
+
+        const standardConc = currentVasoMed === 'vaso' ? 0.2 : 16;
+        const concRatio = standardConc / conc;
+        rateChange *= concRatio;
+
+        let newRate = currentRate + rateChange;
+        if (newRate < 0) newRate = 0;
+        newRate = Math.round(newRate * 10) / 10;
+
+        const medName = document.getElementById('vasoMed').options[document.getElementById('vasoMed').selectedIndex].text;
+
+        document.getElementById('vasoNewRate').textContent = newRate;
+        document.getElementById('vasoLabel').innerHTML = `mL/hr of ${medName}<br><span class="text-lg">(${weight} kg @ ${conc} ${currentVasoMed === 'vaso' ? 'units/mL' : 'mcg/mL'})</span>`;
+        document.getElementById('vasoExplanation').innerHTML = `
+            MAP change needed: ${deltaMAP > 0 ? '+' : ''}${deltaMAP} mmHg<br>
+            Suggested adjustment: ${rateChange >= 0 ? '+' : ''}${rateChange.toFixed(1)} mL/hr<br>
+            <span class="text-amber-400">Reassess MAP in 5-10 minutes • Titrate to lowest effective dose</span>
+        `;
+        document.getElementById('vasoResult').classList.remove('hidden');
+
+        console.log(`✅ calcVasoTitration finished with result: ${newRate}`);
+    }
+
+// ====================== SEDATION TITRATION - MORE CONSERVATIVE ======================
+const sedConcMap = {
+    prop: [10],
+    dex: [4],
+    mid: [1, 5],
+    fent: [10, 50],
+    ket: [1, 2]
+};
 
 function updateSedMed() {
-    currentSedMed = document.getElementById('sedMed').value;
-}
+        currentSedMed = document.getElementById('sedMed').value;
+        const concSelect = document.getElementById('sedConcSelect');
 
-        function updateMed() {
-            currentMed = document.getElementById('medSelect').value;
-            const concInput = document.getElementById('conc');
-            const doseLabel = document.getElementById('doseLabel');
+        let concOptions = hospitalFormulary && hospitalFormulary[currentSedMed] !== undefined 
+            ? [hospitalFormulary[currentSedMed]] 
+            : getDefaultConcOptions(currentSedMed);
 
-            switch(currentMed) {
-                case "norepi": concInput.value = "16 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "epi": concInput.value = "16 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "dopa": concInput.value = "1600 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "dobu": concInput.value = "2500 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "vaso": concInput.value = "0.2 units/mL"; doseLabel.textContent = "Desired Dose (units/min)"; break;
-                case "mil": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "ntg": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/min)"; break;
-                case "ntp": concInput.value = "200 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "prop": concInput.value = "10 mg/mL (1000 mcg/mL)"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "mid": concInput.value = "1 mg/mL"; doseLabel.textContent = "Desired Dose (mg/hr)"; break;
-                case "fent": concInput.value = "50 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/hr)"; break;
-                case "dex": concInput.value = "4 mcg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/hr)"; break;
-                case "ket": concInput.value = "10 mg/mL"; doseLabel.textContent = "Desired Dose (mg/kg/hr)"; break;
-                case "roc": concInput.value = "10 mg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-                case "cis": concInput.value = "2 mg/mL"; doseLabel.textContent = "Desired Dose (mcg/kg/min)"; break;
-            }
-        }
+        concSelect.innerHTML = '';
+        concOptions.forEach(val => {
+            const option = document.createElement('option');
+            option.value = val;
+            option.textContent = val + (['prop','mid','ket'].includes(currentSedMed) ? " mg/mL" : " mcg/mL");
+            concSelect.appendChild(option);
+        });
 
-        function calcMedDrip() {
-            const dose = parseFloat(document.getElementById('dose').value);
-            const weight = parseFloat(document.getElementById('weight').value);
+        concSelect.disabled = isHospitalMode();
+        if (isHospitalMode()) concSelect.title = "Hospital formulary locked";
+    }
 
-            if (isNaN(dose) || isNaN(weight) || dose <= 0 || weight <= 0) {
-                alert("Please enter valid positive numbers for dose and weight.");
-                return;
-            }
-
-            let conc = 16;
-            let isWeightBased = true;
-            let unitText = "mcg/kg/min";
-
-            switch(currentMed) {
-                case "norepi": conc = 16; break;
-                case "epi": conc = 16; break;
-                case "dopa": conc = 1600; break;
-                case "dobu": conc = 2500; break;
-                case "vaso": conc = 0.2; isWeightBased = false; unitText = "units/min"; break;
-                case "mil": conc = 200; break;
-                case "ntg": conc = 200; isWeightBased = false; unitText = "mcg/min"; break;
-                case "ntp": conc = 200; break;
-                case "prop": conc = 1000; break;
-                case "mid": conc = 1; isWeightBased = false; unitText = "mg/hr"; break;
-                case "fent": conc = 50; isWeightBased = false; unitText = "mcg/hr"; break;
-                case "dex": conc = 4; unitText = "mcg/kg/hr"; break;
-                case "ket": conc = 10; isWeightBased = true; unitText = "mg/kg/hr"; break;
-                case "roc": conc = 10; break;
-                case "cis": conc = 2; break;
-            }
-
-            let rate = isWeightBased ? dose * weight : dose;
-            let mlPerHr = (rate * 60) / conc;
-            if (currentMed === "mid" || currentMed === "fent") mlPerHr = rate / conc;
-
-            mlPerHr = Math.round(mlPerHr * 10) / 10;
-
-            setTimeout(() => {
-                document.getElementById('rateDisplay').textContent = mlPerHr;
-                document.getElementById('rateLabel').innerHTML = `mL per hour<br><span class="text-lg">for ${dose} ${unitText} (${weight} kg)</span>`;
-                document.getElementById('medResult').classList.remove('hidden');
-            }, 10);
-        }
-
-                let currentVasoMed = "norepi";
-
-        function updateVasoMed() {
-            currentVasoMed = document.getElementById('vasoMed').value;
-        }
-
-        function toggleMAPInput() {
-            const changeType = document.getElementById('vasoChange').value;
-            document.getElementById('mapInputGroup').classList.toggle('hidden', changeType !== "targetMAP");
-        }
-
-               function calcVasoTitration() {
-            const med = document.getElementById('vasoMed').value;
-            let currentRate = parseFloat(document.getElementById('currentRate').value) || 0;
-            const weight = parseFloat(document.getElementById('patientWeight').value) || 80;
-            const changeType = document.getElementById('vasoChange').value;
-            let targetMAP = parseFloat(document.getElementById('targetMAP').value) || 65;
-            let currentMAP = parseFloat(document.getElementById('currentMAP').value) || 58;
-
-            // Standard concentrations (mcg/mL)
-            const concMap = {
-                "norepi": 16,
-                "epi": 16,
-                "dopa": 1600,
-                "dobu": 1000
-            };
-            const conc = concMap[med] || 16;
-
-            let newRate = currentRate;
-            let explanation = "";
-
-            if (changeType === "targetMAP") {
-                const intensity = document.getElementById('titrationIntensity').value;
-
-                // Safer, more conservative factors
-                let factor = 0.015;   // moderate default
-                if (intensity === "conservative") factor = 0.008;
-                if (intensity === "aggressive") factor = 0.025;
-
-                const deltaMAP = targetMAP - currentMAP;
-                const doseChangePer5mmHg = factor;   // mcg/kg/min per 5 mmHg
-
-                const currentDose = (currentRate * conc) / (weight * 60);   // current mcg/kg/min
-                let newDose = Math.max(0.01, currentDose + (deltaMAP / 5) * doseChangePer5mmHg);
-
-                newRate = (newDose * weight * 60) / conc;
-                newRate = Math.round(newRate * 10) / 10;
-
-                explanation = `${intensity} adjustment toward MAP ${targetMAP} mmHg`;
-            } 
-            else {
-                // Simple step change
-                let step = 0;
-                if (changeType === "increase005") step = 0.05;
-                else if (changeType === "increase01") step = 0.1;
-                else if (changeType === "decrease005") step = -0.05;
-                else if (changeType === "decrease01") step = -0.1;
-
-                const currentDose = (currentRate * conc) / (weight * 60);
-                let newDose = Math.max(0.01, currentDose + step);
-
-                newRate = (newDose * weight * 60) / conc;
-                newRate = Math.round(newRate * 10) / 10;
-
-                explanation = `${step > 0 ? 'Increase' : 'Decrease'} by ${Math.abs(step)} mcg/kg/min`;
-            }
-
-            // Update UI
-            document.getElementById('vasoNewRate').textContent = newRate;
-            document.getElementById('vasoLabel').innerHTML = `mL/hr of ${med === 'norepi' ? 'Norepinephrine' : med === 'epi' ? 'Epinephrine' : med === 'dopa' ? 'Dopamine' : 'Dobutamine'}`;
-            document.getElementById('vasoExplanation').textContent = explanation;
-            document.getElementById('vasoResult').classList.remove('hidden');
-        } 
-
+    // 2. Sedation Titration
     function calcSedationTitration() {
-    const med = currentSedMed;
-    let currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
-    const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
-    const currentRASS = parseInt(document.getElementById('currentRASS').value);
-    const targetRASS = parseInt(document.getElementById('targetRASS').value);
+        console.log("🚀 calcSedationTitration started");
 
-    if (isNaN(currentRate) || isNaN(weight) || weight <= 0) {
-        alert("Please enter valid current rate and patient weight (kg).");
-        return;
-    }
+        const med = currentSedMed;
+        const currentRate = parseFloat(document.getElementById('sedCurrentRate').value) || 0;
+        const weight = parseFloat(document.getElementById('sedWeight').value) || 80;
+        const conc = parseFloat(document.getElementById('sedConcSelect').value);
+        const currentRASS = parseInt(document.getElementById('currentRASS').value);
+        const targetRASS = parseInt(document.getElementById('targetRASS').value);
 
-    const rassDelta = targetRASS - currentRASS;
+        console.log(`Values: med=${med}, rate=${currentRate}, weight=${weight}, conc=${conc}, RASS ${currentRASS}→${targetRASS}`);
 
-    // Conservative mL/hr per RASS point
-    let mlPerRASSPoint = 5;
-    if (med === "prop") mlPerRASSPoint = 5;
-    else if (med === "mid") mlPerRASSPoint = 2;
-    else if (med === "dex") mlPerRASSPoint = 3;
-    else if (med === "fent") mlPerRASSPoint = 6;
-    else if (med === "ket") mlPerRASSPoint = 4;
+        if (isNaN(currentRate) || isNaN(weight) || isNaN(conc) || conc <= 0) {
+            alert("Please enter valid current rate, weight, and concentration.");
+            return;
+        }
 
-    let rateChange = rassDelta * mlPerRASSPoint * -1;
+        const rassDelta = targetRASS - currentRASS;
+        let mlPerRASSPoint = 4.0;
+        if (med === "prop") mlPerRASSPoint = 5.0;
+        else if (med === "mid") mlPerRASSPoint = 3.5;
+        else if (med === "dex") mlPerRASSPoint = 3.5;
+        else if (med === "fent" || med === "fentanyl") mlPerRASSPoint = 25.0;
+        else if (med === "ket") mlPerRASSPoint = 4.5;
 
-    // Max 15 mL/hr change
-    if (Math.abs(rateChange) > 15) {
-        rateChange = Math.sign(rateChange) * 15;
-    }
+        let rateChange = -rassDelta * mlPerRASSPoint;
+        const standardConc = { prop: 10, mid: 1, dex: 4, fent: 10, fentanyl: 10, ket: 1 }[med] || 10;
+        const concRatio = standardConc / conc;
+        rateChange *= concRatio;
 
-    let newRate = currentRate + rateChange;
-    if (newRate < 0) newRate = 0;
+        if (Math.abs(rateChange) > 30) rateChange = Math.sign(rateChange) * 30;
 
-    // Weight-based scaling for Dex and Ketamine (smoother)
-    if (med === "dex" || med === "ket") {
-        const weightFactor = weight / 80;
-        newRate = newRate * weightFactor;
-        newRate = Math.max(0.5, Math.round(newRate * 10) / 10); // minimum 0.5 mL/hr
-    } else {
-        newRate = Math.round(newRate * 10) / 10;
-    }
+        let newRate = currentRate + rateChange;
+        if (newRate < 0) newRate = 0;
+        if (med === "dex" || med === "ket") newRate *= (weight / 80);
 
-    // Explanation
-    let direction = "";
-    if (rassDelta > 0) direction = "— Decrease sedation (patient more awake than target)";
-    else if (rassDelta < 0) direction = "— Increase sedation (patient too awake)";
-    else direction = "— Already at target RASS";
+        newRate = Math.max(0, Math.round(newRate * 10) / 10);
 
-    let explanation = `Current RASS ${currentRASS} → Target ${targetRASS} (Δ ${rassDelta})<br>${direction}<br><span class="text-amber-400">Reassess RASS in 10-15 minutes</span>`;
+        document.getElementById('sedNewRate').textContent = newRate;
+        document.getElementById('sedLabel').innerHTML = `mL/hr of ${med.toUpperCase()}`;
+        document.getElementById('sedExplanation').innerHTML = `
+            ΔRASS = ${rassDelta}<br>
+            ${rassDelta < 0 ? "— Increase sedation" : rassDelta > 0 ? "— Decrease sedation" : "— Already at target"}<br>
+            <span class="text-amber-400">Reassess RASS in 10–15 min • Titrate to lowest effective dose</span>
+        `;
+        document.getElementById('sedResult').classList.remove('hidden');
 
-    // Update UI
-    document.getElementById('sedNewRate').textContent = newRate;
-    document.getElementById('sedLabel').innerHTML = `mL/hr of ${med.charAt(0).toUpperCase() + med.slice(1)}`;
-    document.getElementById('sedExplanation').innerHTML = explanation;
-    document.getElementById('sedResult').classList.remove('hidden');
-}  
+        console.log(`✅ calcSedationTitration finished with result: ${newRate}`);
+    }    
              
     // ====================== UNIT CONVERTER FUNCTIONS ======================
 let conversionMap = {
@@ -1832,20 +2232,22 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-                window.addEventListener('load', () => {
-            console.log("VitalAcuity fully loaded");
+// =============================== windows event listener =============================================
 
-            setupRASS();
-            updateMed();
-            updateSedMed();
-            updateVasoMed();
-            setDripMode('drops');
-            populateUnits();
-
-            // Strong license enforcement on every load
-            checkIfUnlocked();
-            enforceLicenseCheck();
-        });  
+            window.addEventListener('load', () => {
+        console.log("VitalAcuity fully loaded");
+        
+        loadHospitalFormulary();           // ← NEW
+        initTheme();
+        setupRASS();
+        updateMed();
+        updateSedMed();
+        updateVasoMed();
+        setDripMode('drops');
+        populateUnits();
+        checkIfUnlocked();
+        enforceLicenseCheck();
+    });
     
     </script>
                     </div>   <!-- closes the p-4 pt-6 content area -->
